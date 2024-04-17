@@ -10,3 +10,4 @@ TODO:
     - SocketIO per gioco e chat
 - Regole
 - Classifica
+- Ciao
