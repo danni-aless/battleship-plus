@@ -124,12 +124,10 @@
                                 required>
                         </div>
                         <button type="submit" class="btn btn-green" name="signup">Iscriviti</button>
-                        <div id="error-message" class="mb-3 text-danger">
                                 <?php if(isset($_SESSION['signup_err_msg']) && $_SESSION['signup_err_msg'] != ""){ 
-                                    echo $_SESSION['signup_err_msg']; 
+                                    echo "<div class=\"mb-3 text-danger\">" . $_SESSION['signup_err_msg'] . "</div>";
                                     $_SESSION['signup_err_msg'] = "";
                                 } ?>
-                            </div>
                     </form>
                 </div>
             </div>
@@ -155,9 +153,8 @@
                             <input type="password" name="inputPassword" class="form-control" placeholder="Password"
                             required>
                             </div>
-                            <div id="error-message" class="mb-3 text-danger"></div>
                             <button type="submit" class="btn btn-green" name="login">Login</button>
-                            <div id="error-message" class="mb-3 text-danger">
+                            <div id="error-message" class="alert alert-danger" role="alert">
                                 <?php if(isset($_SESSION['login_err_msg']) && $_SESSION['login_err_msg'] != ""){ 
                                     echo $_SESSION['login_err_msg']; 
                                     $_SESSION['login_err_msg'] = "";
