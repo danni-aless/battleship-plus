@@ -1,3 +1,5 @@
+<?php session_start(); ?>
+
 <!DOCTYPE html>
 <html lang="it">
 
@@ -13,10 +15,26 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
         crossorigin="anonymous"></script>
-
     <!-- project's resources -->
     <link rel="icon" href="assets/cruise.png">
     <link rel="stylesheet" href="style.css">
+    <script src="app.js" type="application/javascript"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+
+    <script>
+    $(function() {
+        <?php if ($_SESSION['login_err_msg'] != "") { ?>
+            $("#login").click();
+        <?php } ?>
+    });
+    </script>
+    <script>
+    $(function() {
+        <?php if ($_SESSION['signup_err_msg'] != "") { ?>
+            $("#signup").click();
+        <?php } ?>
+    });
+    </script>
 </head>
 
 <body>
@@ -46,16 +64,30 @@
                 </div>
                 <div class="d-flex justify-content-center">
                     <ul class="navbar-nav">
-                        <li>
-                            <button type="button" class="btn btn-blue" data-bs-toggle="modal"
-                                data-bs-target="#signupModal">
-                                Iscriviti
-                            </button>
-                            <button type="button" class="btn btn-green" data-bs-toggle="modal"
-                                data-bs-target="#loginModal">
-                                Login
-                            </button>
-                        </li>
+                        <?php if (isset($_SESSION['logged_in']) && $_SESSION['logged_in'] == true) {  ?>
+                                <a href= "#">
+                                <div class="profile-icon">
+                                    <?php
+                                    echo "<div class=\"profile-initial\">" . substr($_SESSION['username'], 0, 1) . "</div>"; ?>
+                                </div>
+                                </a>
+                                <li>
+                                <form name="logoutForm" action="logout.php" method="POST">
+                                    <button type="submit" class="btn btn-blue">
+                                        <?php echo "Logout"; ?>
+                                    </button>
+                                </form>
+                                </li>
+                            <?php } else { ?>
+                                <li>
+                                    <button id="signup" type="button" class="btn btn-blue" data-bs-toggle="modal" data-bs-target="#signupModal">
+                                        Iscriviti
+                                    </button>
+                                    <button id="login" type="button" class="btn btn-green" data-bs-toggle="modal" data-bs-target="#loginModal">
+                                        Login
+                                    </button>
+                                </li>
+                            <?php }  ?>
                     </ul>
                 </div>
             </div>
@@ -80,6 +112,10 @@
                 <div class="modal-body">
                     <form name="signupForm" action="signup.php" method="POST">
                         <div class="mb-3">
+                            <input type="text" name="inputUsername" class="form-control" placeholder="Username"
+                                required>
+                        </div>
+                        <div class="mb-3">
                             <input type="email" name="inputEmail" class="form-control" placeholder="Indirizzo e-mail"
                                 required>
                         </div>
@@ -87,7 +123,13 @@
                             <input type="password" name="inputPassword" class="form-control" placeholder="Password"
                                 required>
                         </div>
-                        <button type="submit" class="btn btn-green">Iscriviti</button>
+                        <button type="submit" class="btn btn-green" name="signup">Iscriviti</button>
+                        <div id="error-message" class="mb-3 text-danger">
+                                <?php if(isset($_SESSION['signup_err_msg']) && $_SESSION['signup_err_msg'] != ""){ 
+                                    echo $_SESSION['signup_err_msg']; 
+                                    $_SESSION['signup_err_msg'] = "";
+                                } ?>
+                            </div>
                     </form>
                 </div>
             </div>
@@ -103,15 +145,24 @@
                 </div>
                 <div class="modal-body">
                     <form name="loginForm" action="login.php" method="POST">
-                        <div class="mb-3">
-                            <input type="email" name="inputEmail" class="form-control" placeholder="Indirizzo e-mail"
-                                required>
-                        </div>
-                        <div class="mb-3">
+                            <div class="mb-3">
+                            <!-- ho cambiato il tipo in text per permettere di usare il semplice username per il login
+                            non so se crea problemi di sicurezza -->
+                            <input type="text" name="inputEmailUsername" class="form-control" placeholder="Indirizzo e-mail o Username"
+                            required>
+                            </div>
+                            <div class="mb-3">
                             <input type="password" name="inputPassword" class="form-control" placeholder="Password"
-                                required>
-                        </div>
-                        <button type="submit" class="btn btn-green">Login</button>
+                            required>
+                            </div>
+                            <div id="error-message" class="mb-3 text-danger"></div>
+                            <button type="submit" class="btn btn-green" name="login">Login</button>
+                            <div id="error-message" class="mb-3 text-danger">
+                                <?php if(isset($_SESSION['login_err_msg']) && $_SESSION['login_err_msg'] != ""){ 
+                                    echo $_SESSION['login_err_msg']; 
+                                    $_SESSION['login_err_msg'] = "";
+                                } ?>
+                            </div>
                     </form>
                 </div>
             </div>
