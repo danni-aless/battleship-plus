@@ -20,17 +20,26 @@
     <!-- project's resources -->
     <link rel="icon" href="assets/cruise.png">
     <link rel="stylesheet" href="style.css">
-
+    <script>
+    function showPass(inputId) {
+    var x = document.getElementById(inputId);
+    if (x.type === "password") {
+        x.type = "text";
+    } else {
+        x.type = "password";
+    }
+    }
+    </script>
     <script>
     $(function() {
-        <?php if ($_SESSION['login_err_msg'] != "") { ?>
+        <?php if (isset($_SESSION['login_err_msg']) && $_SESSION['login_err_msg'] != "") { ?>
             $("#login").click();
         <?php } ?>
     });
     </script>
     <script>
     $(function() {
-        <?php if ($_SESSION['signup_err_msg'] != "") { ?>
+        <?php if (isset($_SESSION['signup_err_msg']) && $_SESSION['signup_err_msg'] != "") { ?>
             $("#signup").click();
         <?php } ?>
     });
@@ -120,14 +129,23 @@
                                 required>
                         </div>
                         <div class="mb-3">
-                            <input type="password" name="inputPassword" class="form-control" placeholder="Password"
+                            <input type="password" id = "mypass1" name="inputPassword" class="form-control" placeholder="Password"
                                 required>
                         </div>
-                        <button type="submit" class="btn btn-green" name="signup">Iscriviti</button>
-                                <?php if(isset($_SESSION['signup_err_msg']) && $_SESSION['signup_err_msg'] != ""){ 
-                                    echo "<div class=\"mb-3 text-danger\">" . $_SESSION['signup_err_msg'] . "</div>";
-                                    $_SESSION['signup_err_msg'] = "";
-                                } ?>
+                        <div class="mb-3">
+                            <input type="checkbox" onclick="showPass('mypass1')">Show Password
+                        </div>
+                        <div class="row">
+                            <div class="col-md-3">
+                                <button type="submit" class="btn btn-green" name="signup">Iscriviti</button>
+                            </div>
+                            <div class="col-md-9">
+                                <?php if(isset($_SESSION['signup_err_msg']) && $_SESSION['signup_err_msg'] != ""){ ?>
+                                    <div class="alert alert-danger" role="alert"><?php echo $_SESSION['signup_err_msg']; ?></div>
+                                <?php $_SESSION['signup_err_msg'] = ""; ?>
+                                <?php } ?>
+                            </div>
+                        </div> 
                     </form>
                 </div>
             </div>
@@ -150,16 +168,23 @@
                             required>
                             </div>
                             <div class="mb-3">
-                            <input type="password" name="inputPassword" class="form-control" placeholder="Password"
+                            <input type="password" id="mypass2" name="inputPassword" class="form-control" placeholder="Password"
                             required>
                             </div>
-                            <button type="submit" class="btn btn-green" name="login">Login</button>
-                            <div id="error-message" class="alert alert-danger" role="alert">
-                                <?php if(isset($_SESSION['login_err_msg']) && $_SESSION['login_err_msg'] != ""){ 
-                                    echo $_SESSION['login_err_msg']; 
-                                    $_SESSION['login_err_msg'] = "";
-                                } ?>
+                            <div class="mb-3">
+                                <input type="checkbox" onclick="showPass('mypass2')">Show Password
                             </div>
+                            <div class="row">
+                                <div class="col-md-3">
+                                    <button type="submit" class="btn btn-green" name="login">Login</button>
+                                </div>
+                                <div class="col-md-9">
+                                    <?php if(isset($_SESSION['login_err_msg']) && $_SESSION['login_err_msg'] != ""){ ?>
+                                        <div class="alert alert-danger" role="alert"><?php echo $_SESSION['login_err_msg']; ?></div>
+                                    <?php $_SESSION['login_err_msg'] = ""; ?>
+                                    <?php } ?>
+                                </div>
+                            </div>   
                     </form>
                 </div>
             </div>
