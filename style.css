@@ -29,6 +29,8 @@
 
 .btn-blue {
     background-color: rgba(0, 123, 255, 1);
+    /*ho aggiunto margin-left per staccare icona profilo da logout non sicuro se è il modo migliore*/
+    margin-left: 20px;
     padding-left: 20px;
     padding-right: 20px;
     font-size: large;
@@ -75,4 +77,31 @@ h1 {
     .modal-dialog {
         top: calc(35%);
     }
+}
+
+/*classi per stile icona profilo con prima lettera dell'username*/
+.profile-icon {
+    position: relative;
+    display: inline-block;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background-color: rgba(40, 167, 69, 1);
+}
+
+.profile-icon i {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: #fff;
+}
+
+.profile-initial {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 20px;
+    color: #fff;
 }
