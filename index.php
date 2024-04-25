@@ -44,6 +44,17 @@
         <?php } ?>
     });
     </script>
+    <script>
+    /* Set the width of the sidebar to 250px (show it) */
+    function openNav() {
+        document.getElementById("profilePanel").style.width = "250px";
+    }
+
+    /* Set the width of the sidebar to 0 (hide it) */
+    function closeNav() {
+        document.getElementById("profilePanel").style.width = "0";
+    }
+    </script>
 </head>
 
 <body>
@@ -74,12 +85,9 @@
                 <div class="d-flex justify-content-center">
                     <ul class="navbar-nav">
                         <?php if (isset($_SESSION['logged_in']) && $_SESSION['logged_in'] == true) {  ?>
-                                <a href= "#">
-                                <div class="profile-icon">
-                                    <?php
-                                    echo "<div class=\"profile-initial\">" . substr($_SESSION['username'], 0, 1) . "</div>"; ?>
-                                </div>
-                                </a>
+                            <button type="button" class="btn btn-green btn-circle" onclick="openNav()"><?php
+                                    echo "<div class=\"profile-text\">" . substr($_SESSION['username'], 0, 1) . "</div>"; ?>
+                            </button>
                                 <li>
                                 <form name="logoutForm" action="logout.php" method="POST">
                                     <button type="submit" class="btn btn-blue">
@@ -102,6 +110,17 @@
             </div>
         </div>
     </nav>
+
+    <!-- Profile Side Panel -->
+    <div id="profilePanel" class="sidepanel">
+    <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
+    <div class="sidePanelProfile">
+        <button type="button" class="btn btn-green btn-circle" onclick="openNav()">
+            <?php echo "<div class=\"profile-text\">" . substr($_SESSION['username'], 0, 1) . "</div>"; ?>
+        </button>
+        <?php echo $_SESSION['username']; ?>
+    </div>
+    </div>
 
     <!-- webpage body -->
     <h1>Battleship+</h1>
