@@ -45,14 +45,12 @@
     });
     </script>
     <script>
-    /* Set the width of the sidebar to 250px (show it) */
-    function openNav() {
-        document.getElementById("profilePanel").style.width = "250px";
+    function openPopUp() {
+        document.getElementById('popup').style.display = 'block';
     }
 
-    /* Set the width of the sidebar to 0 (hide it) */
-    function closeNav() {
-        document.getElementById("profilePanel").style.width = "0";
+    function closePopUp() {
+        document.getElementById('popup').style.display = 'none';
     }
     </script>
 </head>
@@ -85,7 +83,7 @@
                 <div class="d-flex justify-content-center">
                     <ul class="navbar-nav">
                         <?php if (isset($_SESSION['logged_in']) && $_SESSION['logged_in'] == true) {  ?>
-                            <button type="button" class="btn btn-green btn-circle" onclick="openNav()"><?php
+                            <button type="button" class="btn btn-green btn-circle" onclick="openPopUp()"><?php
                                     echo "<div class=\"profile-text\">" . substr($_SESSION['username'], 0, 1) . "</div>"; ?>
                             </button>
                                 <li>
@@ -111,16 +109,21 @@
         </div>
     </nav>
 
-    <!-- Profile Side Panel -->
-    <div id="profilePanel" class="sidepanel">
-    <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
-    <div class="sidePanelProfile">
-        <button type="button" class="btn btn-green btn-circle" onclick="openNav()">
-            <?php echo "<div class=\"profile-text\">" . substr($_SESSION['username'], 0, 1) . "</div>"; ?>
-        </button>
-        <?php echo $_SESSION['username']; ?>
+    <!-- Pop Up Profile -->
+<div id="popup" class="popup">
+    <div class="popup-content">
+        <span class="closebtn" onclick="closePopUp()">&times;</span>
+        <div class="d-flex justify-content-center">
+            <button type="button" class="btn btn-green btn-circle" onclick="openPopUp()">
+                <?php echo "<div class=\"profile-text\">" . substr($_SESSION['username'], 0, 1) . "</div>"; ?>
+            </button>
+        </div>
+        <div class="text-center mt-2">
+            <?php echo $_SESSION['username']; ?>
+        </div>
     </div>
-    </div>
+</div>
+
 
     <!-- webpage body -->
     <h1>Battleship+</h1>
@@ -181,8 +184,6 @@
                 <div class="modal-body">
                     <form name="loginForm" action="login.php" method="POST">
                             <div class="mb-3">
-                            <!-- ho cambiato il tipo in text per permettere di usare il semplice username per il login
-                            non so se crea problemi di sicurezza -->
                             <input type="text" name="inputEmailUsername" class="form-control" placeholder="Indirizzo e-mail o Username"
                             required>
                             </div>
