@@ -61,6 +61,30 @@
         document.getElementById('popup').style.display = 'none';
     }
     </script>
+    <script>
+    $(document).ready(function() {
+    $('#classifica').click(function(e) {
+        e.preventDefault(); 
+        $.ajax({
+            type: 'GET',
+            url: 'ranking.php',
+            success: function(data) {
+                $('#webpage-body').html(data);
+            },
+        });
+    });
+});
+</script>
+<script>
+    $(document).ready(function() {
+    $(".nav-link").click(function() {
+        $(".nav-link").removeClass("active");
+        $(this).addClass("active");
+    });
+});
+
+</script>
+
 </head>
 
 <body>
@@ -84,7 +108,7 @@
                             <a class="nav-link" href="rules.html">Regole</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="ranking.php">Classifica</a>
+                            <a id="classifica" class="nav-link" href="#">Classifica</a>
                         </li>
                     </ul>
                 </div>
@@ -134,12 +158,14 @@
 
 
     <!-- webpage body -->
-    <h1>Battleship+</h1>
-    <div class="d-flex justify-content-center gap-2">
-        <a class="btn btn-green" href="#">Crea Partita</a>
-        <a class="btn btn-green" href="game.php">Unisciti alla Partita</a>
+    <div id="webpage-body">
+        <h1>Battleship+</h1>
+        <div class="d-flex justify-content-center gap-2">
+            <a class="btn btn-green" href="#">Crea Partita</a>
+            <a class="btn btn-green" href="game.php">Unisciti alla Partita</a>
+        </div>
     </div>
-
+   
     <!-- modal windows -->
     <div class="modal fade" id="signupModal">
         <div class="modal-dialog">

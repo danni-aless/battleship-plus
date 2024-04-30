@@ -1,3 +1,8 @@
+<?php
+include 'connection.php';
+$query = "select username, partite_giocate, partite_vinte, data_iscrizione from login order by partite_vinte desc";
+$result = mysqli_query($db_conn, $query);
+?>
 <!DOCTYPE html>
 <html lang="it">
 
@@ -13,105 +18,58 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
         crossorigin="anonymous"></script>
-
+        <style>
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            border: 1px solid black;
+            padding: 8px;
+            text-align: left;
+        }
+        th, {
+            background-color: #f2f2f2;
+        }
+    </style>
     <!-- project's resources -->
     <link rel="icon" href="assets/cruise.png">
     <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
-    <!-- navigation bar -->
-    <nav class="navbar navbar-expand-md">
-        <div class="container-fluid">
-            <a class="navbar-brand" href="#">
-                <img src="assets/cruise.png" alt="Battleship+" width="30" height="30">
-            </a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
-                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <div class="d-flex me-auto">
-                    <ul class="navbar-nav">
-                        <li class="nav-item">
-                            <a class="nav-link" href="index.php">Home</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="rules.html">Regole</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link active" aria-current="page" href="ranking.php">Classifica</a>
-                        </li>
-                    </ul>
-                </div>
-                <div class="d-flex justify-content-center">
-                    <ul class="navbar-nav">
-                        <li>
-                            <button type="button" class="btn btn-blue" data-bs-toggle="modal"
-                                data-bs-target="#signupModal">
-                                Iscriviti
-                            </button>
-                            <button type="button" class="btn btn-green" data-bs-toggle="modal"
-                                data-bs-target="#loginModal">
-                                Login
-                            </button>
-                        </li>
-                    </ul>
-                </div>
-            </div>
-        </div>
-    </nav>
-
     <!-- webpage body -->
-    <h1>Classifica</h1>
-
-    <!-- modal windows -->
-    <div class="modal fade" id="signupModal">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">Iscriviti al gioco</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                </div>
-                <div class="modal-body">
-                    <form name="signupForm" action="signup.php" method="POST">
-                        <div class="mb-3">
-                            <input type="email" name="inputEmail" class="form-control" placeholder="Indirizzo e-mail"
-                                required>
-                        </div>
-                        <div class="mb-3">
-                            <input type="password" name="inputPassword" class="form-control" placeholder="Password"
-                                required>
-                        </div>
-                        <button type="submit" class="btn btn-green">Iscriviti</button>
-                    </form>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div class="modal fade" id="loginModal">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">Login</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                </div>
-                <div class="modal-body">
-                    <form name="loginForm" action="login.php" method="POST">
-                        <div class="mb-3">
-                            <input type="email" name="inputEmail" class="form-control" placeholder="Indirizzo e-mail"
-                                required>
-                        </div>
-                        <div class="mb-3">
-                            <input type="password" name="inputPassword" class="form-control" placeholder="Password"
-                                required>
-                        </div>
-                        <button type="submit" class="btn btn-green">Login</button>
-                    </form>
-                </div>
-            </div>
-        </div>
+    <div id="webpage-body">
+        <h1>Classifica</h1>
+        <table>
+            <tr>
+                <th>Pos.</th>
+                <th>Username</th>
+                <th>Partite Giocate</th>
+                <th>Partite Vinte</th>
+                <th>Percentuale Vittorie</th>
+                <th>Data Iscrizione</th>
+            </tr>
+            <?php
+            $pos = 1;
+            while ($row = mysqli_fetch_assoc($result)) {
+                if($row['partite_giocate']!=0){
+                    $percentuale_vittorie = ($row['partite_vinte'] / $row['partite_giocate']) * 100;
+                }else{
+                    $percentuale_vittorie=0;
+                }
+                echo "<tr>";
+                echo "<td>" . $pos . "</td>";
+                echo "<td>" . $row['username'] . "</td>";
+                echo "<td>" . $row['partite_giocate'] . "</td>";
+                echo "<td>" . $row['partite_vinte'] . "</td>";
+                echo "<td>" . round($percentuale_vittorie, 2) . "%</td>";
+                echo "<td>" . $row['data_iscrizione'] . "</td>";
+                echo "</tr>";
+                $pos++;
+            }
+            ?>
+        </table>
     </div>
 </body>
 

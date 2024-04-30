@@ -13,7 +13,7 @@
             $query = "select * from login where email = '$email' or username='$username'";
             $result = mysqli_query($db_conn,$query);
             if (mysqli_num_rows($result) == 0) {
-                $query_insert = "insert into login (`username`,`email`, `password`) values ('$username', '$email', '$password')";
+                $query_insert = "insert into login (`username`,`email`, `password`,`data_iscrizione`) values ('$username', '$email', '$password',NOW())";
                 $result = mysqli_query($db_conn,$query_insert);
                 $_SESSION['logged_in'] = true;
                 $_SESSION['username'] =  $username;
