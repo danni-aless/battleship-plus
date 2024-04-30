@@ -1,3 +1,5 @@
+<?php session_start(); ?>
+
 <!DOCTYPE html>
 <html lang="it">
 
@@ -14,14 +16,31 @@
         integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
         crossorigin="anonymous"></script>
 
+    <!-- jquery library -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="https://code.jquery.com/ui/1.13.3/jquery-ui.js"></script>
+
+    <!-- socket.io library -->
+    <script src="https://cdn.socket.io/4.7.5/socket.io.min.js"></script>
+
+    <!-- fontawesome kit -->
+    <script src="https://kit.fontawesome.com/977cc8c5e1.js" crossorigin="anonymous"></script>
+
     <!-- project's resources -->
     <link rel="icon" href="assets/cruise.png">
     <link rel="stylesheet" href="style.css">
+    
+    <!-- script to be loaded after page rendering -->
+    <script src="game.js" defer></script>
+    <script>
+        const username = '<?php echo isset($_SESSION['username']) ? $_SESSION['username'] : '';?>';
+    </script>
+    
 </head>
 
 <body>
     <!-- navigation bar -->
-    <nav class="navbar navbar-expand-sm">
+    <nav class="navbar navbar-expand-md">
         <div class="container-fluid">
             <a class="navbar-brand" href="#">
                 <img src="assets/cruise.png" alt="Battleship+" width="30" height="30">
@@ -49,25 +68,52 @@
     </nav>
 
     <!-- webpage body -->
-    <div id="area-di-gioco">
-        <div id="area-navi"></div>
-        <div id="area-giocatore">
-            <div id="griglia-giocatore" class="griglia"></div>
-            <div id="area-bottone-navi">
-                <button type="button" class="btn btn-orange" draggable="false">Inizia la partita</button>
-            </div>  
+    <div id="area-gioco">
+        <div id="area-laterale">
+            <div id="area-navi" class="container"></div>
+            <div id="area-chat">
+                <div id="storico-messaggi" class="d-flex flex-column-reverse"></div>
+                <form id="form-chat" action="" autocomplete="off">
+                    <input id="input-chat" type="text" class="form-control" placeholder="Scrivi un messaggio">
+                    <button type="submit" class="btn btn-chat">
+                    <i class="fa-solid fa-paper-plane"></i>
+                    </button>
+                </form>
+            </div>
         </div>
-        <div id="area-avversario">
-            <div id="griglia-avversario" class="griglia"></div>
-            <div id="area-powerup">
-                <div class="row"></div>
-            </div> 
+        <div id="area-battaglia" class="row">
+            <div id="area-giocatore" class="col">
+                <div class="area-titolo">Campo giocatore</div>
+                <div class="area-griglia">
+                    <div id="griglia-giocatore" class="griglia"></div>
+                </div>
+                <div id="area-bottone-inizio">
+                    <button id="bottone-inizio" type="button" class="btn btn-orange" draggable="false" disabled>Inizia la partita</button>
+                </div>  
+            </div>
+            <div id="area-avversario" class="col">
+                <div class="area-titolo">Campo avversario</div>
+                <div class="area-griglia">
+                    <div id="griglia-avversario" class="griglia"></div>
+                </div>
+                <div class="area-titolo">Powerup raccolti</div>
+                <div id="area-powerup" class="container">
+                    <div class="row"></div>
+                </div> 
+            </div>
         </div>
-        <div id="area-chat"></div>
     </div>
 
-    <!-- script to be loaded after page rendering -->
-    <script src="app.js" type="application/javascript"></script>
+    <!-- modal window -->
+    <div class="modal fade" id="wait-modal">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-body">
+                    <h5 class="modal-title">In cerca di una partita...</h5>
+                </div>
+            </div>
+        </div>
+    </div>
 </body>
 
 </html>

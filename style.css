@@ -3,7 +3,6 @@
     padding-top: 10px;
     padding-bottom: 10px;
     font-size: large;
-    /*font-weight: bold;*/
 
     --bs-navbar-color: rgba(255, 255, 255, 0.75);
     --bs-navbar-hover-color: rgba(255, 255, 255, 0.9);
@@ -24,6 +23,18 @@
     padding-left: 20px;
     padding-right: 20px;
     font-size: large;
+    color: white;
+}
+
+.btn-chat {
+    background-color: rgba(40, 167, 69, 1);
+    font-size: medium;
+    color: white;
+}
+
+.btn-chat:hover {
+    background-color: rgba(40, 167, 69, 0.5);
+    font-size: medium;
     color: white;
 }
 
@@ -82,28 +93,41 @@ body {
 }
 
 h1 {
-    text-align: center;
     margin: 40px;
+    text-align: center;
     font-size: xx-large;
     color: white;
 }
 
-#area-di-gioco {
-    margin-top: 30px;
+#area-gioco {
+    width: 100%;
     display: flex;
-    justify-content: space-around;
+    justify-content: space-evenly;
+}
+
+#area-laterale {
+    width: 30%;
+    height: 100%;
+    margin: 0px;
+    margin-top: 20px;
+    margin-left: 20px;
+    padding: 0px;
+    border-radius: 20px;
+    background-color: white;
+    box-shadow: rgba(0, 0, 0, 0.15) 1.95px 1.95px 2.6px;
 }
 
 #area-navi {
-    width: 20%;
-    height: 400px;
-    background-color: white;
+    width: 100%;
+    height: 100%;
     display: flex;
     justify-content: space-evenly;
 }
 
 #area-navi > .row {
     width: 100%;
+    margin: 0px;
+    padding: 0px;
 }
 
 #area-navi > .row > .col {
@@ -119,9 +143,14 @@ h1 {
 .nave {
     background-color: black;
     border-radius: 10px;
+    cursor: grab;
 
     --u: 20px;
     --m: 0px;
+}
+
+.nave:active {
+    cursor: grabbing;
 }
 
 .nave1 {
@@ -160,37 +189,107 @@ h1 {
     margin: 0px;
     background-color: rgb(251, 255, 0);
     border-radius: 10px;
+    cursor: grab;
+}
+
+.powerup:active {
+    cursor: grabbing;
+}
+
+#area-chat {
+    width: 100%;
+    height: 400px;
+    display: none;
+}
+
+#storico-messaggi {
+    width: 100%;
+    height: 100%;
+    padding: 20px;
+    scrollbar-width: none;
+    overflow-y: scroll;
+}
+
+#storico-messaggi > div {
+    width: 100%;
+    margin: 0px;
+    padding-top: 5px;
+    padding-bottom: 5px;
+}
+
+#form-chat {
+    display: flex;
+}
+
+#area-battaglia {
+    width: 100%;
+    height: 100%;
+    margin: 10px;
+    padding: 0px;
 }
 
 #area-giocatore {
-    padding-top: 25px;
+    /*width: max(100%, 200px);*/
+    /*min-width: 200px;*/
+    margin: 10px;
+    /*margin-right: 0px;*/
+    padding: 0px;
+    display: flex;
+    flex-direction: column;
 }
 
-#area-bottone-navi {
-    margin-top: 25px;
+.area-titolo {
+    text-align: center;
+    font-size: large;
+    font-weight: bold;
+    color: black;
+    user-select: none;
+}
+
+.area-griglia {
+    width: auto;
+    margin: 10px;
+    display: flex;
+    justify-content: center;
+}
+
+#area-bottone-inizio {
+    margin: 10px;
     display: flex;
     justify-content: center;
 }
 
 #area-avversario {
-    padding-top: 25px;
+    /*min-width: 200px;*/
+    margin: 10px;
+    /*margin-left: 0px;*/
+    padding: 0px;
+    display: flex;
+    flex-direction: column;
 }
 
 #area-powerup {
-    width: 200px;
-    height: 100px;
-    margin-top: 25px;
+    aspect-ratio: 3/1;
+    width: auto;
+    height: auto;
+    margin: 10px;
+    margin-left: 30px;
+    margin-right: 30px;
+    padding: 0px;
+    border-radius: 20px;
     background-color: white;
+    box-shadow: rgba(0, 0, 0, 0.15) 1.95px 1.95px 2.6px;
     display: flex;
     justify-content: space-evenly;
 }
 
 #area-powerup > .row {
     width: 100%;
+    margin: 0px;
+    padding: 0px;
 }
 
 #area-powerup > .row > .col {
-    margin-top: 25px;
     margin-bottom: 25px;
     padding-right: 5px;
     padding-left: 5px;
@@ -200,17 +299,27 @@ h1 {
 }
 
 .griglia {
-    width: 200px;
-    height: 200px;
+    aspect-ratio: 1/1;
+    width: 70%;
+    height: auto;
     background-color: white;
+    box-shadow: rgba(0, 0, 0, 0.15) 1.95px 1.95px 2.6px;
     display: flex;
     flex-wrap: wrap;
 }
 
 .cella {
-    width: 20px;
-    height: 20px;
+    width: 10%;
+    height: 10%;
     border: solid 1px black;
+}
+
+.cella-piena {
+    cursor: grab;
+}
+
+.cella-piena:active {
+    cursor: grabbing;
 }
 
 .cella-piena.cella-nave {
@@ -233,16 +342,37 @@ h1 {
     background-color: rgb(0, 74, 173);
 }
 
-#area-chat {
-    width: 20%;
-    height: 400px;
-    background-color: white;
-}
-
 /* media query for modal window position on mobile screens */
-@media screen and (max-width: 575.98px) {
+@media screen and (max-width: 768px) {
     .modal-dialog {
         top: 35%;
+    }
+
+    #area-battaglia {
+        width: auto;
+        margin: 0px;
+    }
+
+    #area-giocatore {
+        min-width: 290px;
+        margin: 0px;
+    }
+
+    #area-avversario {
+        min-width: 290px;
+        margin: 0px;
+    }
+
+    .area-titolo {
+        margin-top: 20px;
+    }
+
+    .area-griglia {
+        margin: 0px;
+    }
+
+    #area-powerup {
+        margin-top: 0px;
     }
 }
 

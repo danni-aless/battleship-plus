@@ -17,12 +17,11 @@
     <!-- project's resources -->
     <link rel="icon" href="assets/cruise.png">
     <link rel="stylesheet" href="style.css">
-    <script src="app.js" type="application/javascript"></script>
 </head>
 
 <body>
     <!-- navigation bar -->
-    <nav class="navbar navbar-expand-sm">
+    <nav class="navbar navbar-expand-md">
         <div class="container-fluid">
             <a class="navbar-brand" href="#">
                 <img src="assets/cruise.png" alt="Battleship+" width="30" height="30">
