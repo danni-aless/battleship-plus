@@ -1,8 +1,26 @@
-// username è preso dalla variabile di sessione php (stringa vuota se non è settata)
-const player = username==="" ? "user-"+Math.random().toString(36).slice(2, 7) : username;
+// Esegui il codice solo quando il DOM è completamente caricato
+$(document).ready(function() {
+
+// Connessione al server di gioco
+const socket = io("http://localhost:8000");
+//volendo si può testare il progetto sulla rete di casa, va inserito l'indirizzo ip locale del computer
+//const socket = io("http://192.168.1.201:8000");
+
+// Recupero dei dati di gioco
+$.ajax({
+    url: "readGameData.php",
+    type: "POST",
+    dataType: "json",
+    success: function(response) {
+        socket.emit("nuovo-giocatore", response);
+    },
+    error: function(error) {
+        console.log("Error reading settings:", error);
+    }
+});
 
 // Riempimento delle griglie con gli elementi cella
-const width = 10;
+let width = 10;
 function riempiGriglia(griglia, player) {
     for(let i=0; i<width*width; i++) {
         const cella = document.createElement("div");
@@ -11,9 +29,9 @@ function riempiGriglia(griglia, player) {
         cella.id = player+i.toString();
         griglia.append(cella);
     }
+    $(".cella").css({width: `${100/width}%`});
 }
-riempiGriglia(document.getElementById("griglia-giocatore"), "g");
-riempiGriglia(document.getElementById("griglia-avversario"), "a");
+
 
 // Creazione delle navi e dei powerup
 class Elemento {
@@ -38,40 +56,41 @@ class Elemento {
 }
 
 let elementi = [];
-elementi.push(new Elemento("n1", ["nave", "nave1"], 1));
-elementi.push(new Elemento("n2", ["nave", "nave2"], 2));
-elementi.push(new Elemento("n3", ["nave", "nave3"], 3));
-elementi.push(new Elemento("n4", ["nave", "nave4"], 4));
-elementi.push(new Elemento("n5", ["nave", "nave5"], 5));
-elementi.push(new Elemento("p1", ["powerup", "powerup-riga"], 1));
-elementi.push(new Elemento("p2", ["powerup", "powerup-colonna"], 1));
-elementi.push(new Elemento("p3", ["powerup", "powerup-bomba"], 1));
+function creaElemento(nome, classe, lunghezza) {
+    const elemento = new Elemento(nome, classe, lunghezza);
+    elementi.push(elemento);
+    return elemento;
+}
 
 // Riempimento dell'area navi
 const areaNavi = document.getElementById("area-navi");
 const row = document.createElement("div");
 row.classList.add("row");
 areaNavi.append(row);
-for(let elem of elementi) {
-    const col = document.createElement("div");
-    col.classList.add("col");
-    col.append(elem.div);
-    row.append(col);
+function riempiAreaNavi() {
+    for(let elem of elementi) {
+        const col = document.createElement("div");
+        col.classList.add("col");
+        col.append(elem.div);
+        row.append(col);
+    }
 }
 
 // Associazione degli EventListener alle navi e ai powerup
 let elementoSpostato;
-for(let elem of elementi) {
-    elem.div.addEventListener("click", function(event) {
-        elem.ruotaElemento();
-    });
-    elem.div.addEventListener("dragstart", function(event) {
-        elementoSpostato = elem;
-        event.dataTransfer.clearData();
-        event.dataTransfer.setData("text/plain", elem.nome);
-        event.dataTransfer.setDragImage(new Image(), 0, 0);
-        event.dataTransfer.effectAllowed = "move";
-    });
+function aggiungiEventListenerElementi() {
+    for(let elem of elementi) {
+        elem.div.addEventListener("click", function(event) {
+            elem.ruotaElemento();
+        });
+        elem.div.addEventListener("dragstart", function(event) {
+            elementoSpostato = elem;
+            event.dataTransfer.clearData();
+            event.dataTransfer.setData("text/plain", elem.nome);
+            event.dataTransfer.setDragImage(new Image(), 0, 0);
+            event.dataTransfer.effectAllowed = "move";
+        });
+    }
 }
 
 // Funzioni per il posizionamento delle navi e dei powerup sulla griglia del giocatore
@@ -130,6 +149,9 @@ function posizionaElemento(elem, id) {
 // Funzioni per la gestione dei turni
 let giocatorePronto = false;
 let giocoIniziato = false;
+let giocoFinito = false;
+let player = null;
+let avversario = null;
 let turno = null;
 
 function cambiaTurno() {
@@ -145,7 +167,15 @@ function iniziaPartita(firstPlayer) {
 
 function terminaPartita() {
     console.log("hai perso");
+    giocoFinito = true;
     socket.emit("end");
+    // Aggiornamento della classifica
+    $.ajax({
+        url: "updateRanking.php",
+        type: "POST",
+        data: {type: "lost"}
+    });
+    $('#lost-modal').modal('show');
 }
 
 // Funzioni per le meccaniche base di gioco
@@ -200,7 +230,7 @@ function usaPowerUp(powerUp, id) {
     const player = id.match(/([ga])(\d+)/)[1];
     let index = Number(id.match(/([ga])(\d+)/)[2]);
     // verifica del powerup usato, si potrebbe migliorare
-    if(powerUp.classe.includes("powerup-riga")) {
+    if(powerUp.classe.includes("powerupriga")) {
         let start = index-index%width;
         let end = index-index%width+width-1;
         for(let i=start; i<=end; i++) {
@@ -210,7 +240,7 @@ function usaPowerUp(powerUp, id) {
                 socket.emit("colpo", i.toString());
             }
         }
-    } else if(powerUp.classe.includes("powerup-colonna")) {
+    } else if(powerUp.classe.includes("powerupcolonna")) {
         let start = index%width;
         let end = width*(width-1)+index%width;
         for(let i=start; i<=end; i+=width) {
@@ -220,7 +250,7 @@ function usaPowerUp(powerUp, id) {
                 socket.emit("colpo", i.toString());
             }
         }
-    } else if(powerUp.classe.includes("powerup-bomba")) {
+    } else if(powerUp.classe.includes("powerupbomba")) {
         for(let j=index-width; j<=index+width; j+=width) {
             for(let i=j-1; i<=j+1; i++) {
                 const idCella = player+i.toString();
@@ -245,124 +275,160 @@ function controllaBottoneInizio() {
 }
 
 // Associazione degli EventListener alle celle e all'area navi
-const grigliaGiocatore = document.getElementById("griglia-giocatore");
-for(let cella of grigliaGiocatore.children) {
-    cella.addEventListener("dragstart", function(event) {
-        event.dataTransfer.setDragImage(new Image(), 0, 0);
-        event.dataTransfer.effectAllowed = "move";
-        if(!giocatorePronto && !giocoIniziato && event.target.classList.contains("cella-piena")) {
-            const elemento = trovaElemento(event.target.id);
-            elementoSpostato = elemento;
-            event.dataTransfer.clearData();
-            event.dataTransfer.setData("text/plain", elemento.nome);
-        }
-    });
-    cella.addEventListener("dragover", function(event) {
+function aggiungiEventListenerCelle() {
+    const grigliaGiocatore = document.getElementById("griglia-giocatore");
+    for(let cella of grigliaGiocatore.children) {
+        cella.addEventListener("dragstart", function(event) {
+            event.dataTransfer.setDragImage(new Image(), 0, 0);
+            event.dataTransfer.effectAllowed = "move";
+            if(!giocatorePronto && !giocoIniziato && event.target.classList.contains("cella-piena")) {
+                const elemento = trovaElemento(event.target.id);
+                elementoSpostato = elemento;
+                event.dataTransfer.clearData();
+                event.dataTransfer.setData("text/plain", elemento.nome);
+            }
+        });
+        cella.addEventListener("dragover", function(event) {
+            event.preventDefault();
+        });
+        cella.addEventListener("dragenter", function(event) {
+            const elemento = elementoSpostato;
+            if(!giocatorePronto && !giocoIniziato && elemento!=null) {
+                const idCella = event.target.id;
+                if(posizioneValida(elemento, idCella)) {
+                    posizionaElemento(elemento, idCella);
+                }
+            }
+        });
+        cella.addEventListener("drop", function(event) {
+            const nome = event.dataTransfer.getData("text/plain");
+            const elemento = elementi.find(elem => elem.nome===nome);
+            if(!giocatorePronto && !giocoIniziato && elemento!=null) {
+                const idCella = event.target.id;
+                if(posizioneValida(elemento, idCella)) {
+                    posizionaElemento(elemento, idCella);
+                    if(elemento.div.parentNode!=null)
+                        elemento.div.parentNode.removeChild(elemento.div);
+                    controllaBottoneInizio();
+                }
+            }
+        });
+        cella.addEventListener("click", function(event) {
+            if(!giocatorePronto && !giocoIniziato && event.target.classList.contains("cella-piena")) {
+                const elemento = trovaElemento(event.target.id);
+                const idCella = elemento.celle[0];
+                elemento.ruotaElemento();
+                if(posizioneValida(elemento, idCella)) {
+                    posizionaElemento(elemento, idCella);
+                } else {
+                    elemento.ruotaElemento();
+                }
+            }
+        });
+    }
+    const grigliaAvversario = document.getElementById("griglia-avversario");
+    for(let cella of grigliaAvversario.children) {
+        cella.addEventListener("dragover", function(event) {
+            event.preventDefault();
+        });
+        cella.addEventListener("dragenter", function(event) {
+            const powerUp = elementoSpostato;
+            if(giocoIniziato && powerUp!=null && powerUp.div.classList.contains("powerup") && cellaAttiva(event.target)) {
+                const idCella = event.target.id;
+                if(posizioneValida(powerUp, idCella)) {
+                    posizionaElemento(powerUp, idCella);
+                }
+            }
+        });
+        cella.addEventListener("drop", function(event) {
+            const nome = event.dataTransfer.getData("text/plain");
+            const powerUp = powerUps.find(elem => elem.nome===nome);
+            if(giocoIniziato && powerUp!=null && powerUp.div.classList.contains("powerup") && cellaAttiva(event.target)) {
+                usaPowerUp(powerUp, event.target.id);
+                powerUp.div.parentNode.remove();
+                socket.emit("cambia-turno");
+            }
+        });
+        cella.addEventListener("click", function(event) {
+            if(giocoIniziato && cellaAttiva(event.target)) {
+                let index = event.target.id.match(/([ga])(\d+)/)[2];
+                socket.emit("colpo", index);
+                socket.emit("cambia-turno"); // vedere se funziona con il fine partita
+            }
+        });
+    }
+}
+
+function aggiungiEventListenerAreaNavi() {
+    areaNavi.addEventListener("dragover", function(event) {
         event.preventDefault();
     });
-    cella.addEventListener("dragenter", function(event) {
-        const elemento = elementoSpostato;
-        if(!giocatorePronto && !giocoIniziato && elemento!=null) {
-            const idCella = event.target.id;
-            if(posizioneValida(elemento, idCella)) {
-                posizionaElemento(elemento, idCella);
-            }
-        }
-    });
-    cella.addEventListener("drop", function(event) {
+    areaNavi.addEventListener("drop", function(event) {
         const nome = event.dataTransfer.getData("text/plain");
         const elemento = elementi.find(elem => elem.nome===nome);
-        if(!giocatorePronto && !giocoIniziato && elemento!=null) {
-            const idCella = event.target.id;
-            if(posizioneValida(elemento, idCella)) {
-                posizionaElemento(elemento, idCella);
-                if(elemento.div.parentNode!=null)
-                    elemento.div.parentNode.removeChild(elemento.div);
-                controllaBottoneInizio();
-            }
-        }
-    });
-    cella.addEventListener("click", function(event) {
-        if(!giocatorePronto && !giocoIniziato && event.target.classList.contains("cella-piena")) {
-            const elemento = trovaElemento(event.target.id);
-            const idCella = elemento.celle[0];
-            elemento.ruotaElemento();
-            if(posizioneValida(elemento, idCella)) {
-                posizionaElemento(elemento, idCella);
-            } else {
-                elemento.ruotaElemento();
-            }
+        if(!giocatorePronto && !giocoIniziato && elemento!=null && elemento.div.parentNode===null) {
+            togliElemento(elemento);
+            document.querySelector("#area-navi > .row > .col:empty").append(elemento.div);
+            controllaBottoneInizio();
         }
     });
 }
-const grigliaAvversario = document.getElementById("griglia-avversario");
-for(let cella of grigliaAvversario.children) {
-    cella.addEventListener("dragover", function(event) {
-        event.preventDefault();
-    });
-    cella.addEventListener("dragenter", function(event) {
-        const powerUp = elementoSpostato;
-        if(giocoIniziato && powerUp!=null && powerUp.div.classList.contains("powerup") && cellaAttiva(event.target)) {
-            const idCella = event.target.id;
-            if(posizioneValida(powerUp, idCella)) {
-                posizionaElemento(powerUp, idCella);
-            }
-        }
-    });
-    cella.addEventListener("drop", function(event) {
-        const nome = event.dataTransfer.getData("text/plain");
-        const powerUp = powerUps.find(elem => elem.nome===nome);
-        if(giocoIniziato && powerUp!=null && powerUp.div.classList.contains("powerup") && cellaAttiva(event.target)) {
-            usaPowerUp(powerUp, event.target.id);
-            powerUp.div.parentNode.remove();
-            socket.emit("cambia-turno");
-        }
-    });
-    cella.addEventListener("click", function(event) {
-        if(giocoIniziato && cellaAttiva(event.target)) {
-            let index = event.target.id.match(/([ga])(\d+)/)[2];
-            socket.emit("colpo", index);
-            socket.emit("cambia-turno"); // vedere se funziona con il fine partita
-        }
-    });
-}
-areaNavi.addEventListener("dragover", function(event) {
-    event.preventDefault();
-});
-areaNavi.addEventListener("drop", function(event) {
-    const nome = event.dataTransfer.getData("text/plain");
-    const elemento = elementi.find(elem => elem.nome===nome);
-    if(!giocatorePronto && !giocoIniziato && elemento!=null && elemento.div.parentNode===null) {
-        togliElemento(elemento);
-        document.querySelector("#area-navi > .row > .col:empty").append(elemento.div);
-        controllaBottoneInizio();
-    }
-});
 
-// Finestra modale per attesa giocatore
-const waitModal = new bootstrap.Modal("#wait-modal", {
-    backdrop: "static",
-    keyboard: false
-});
+// Funzione per l'inizializzazione del campo di gioco
+function inizializzaCampo(gameData) {
+    width = gameData.width;
+    riempiGriglia(document.getElementById("griglia-giocatore"), "g");
+    riempiGriglia(document.getElementById("griglia-avversario"), "a");
+
+    let navi = gameData.navi;
+    let i = 0;
+    for(let nave in navi) {
+        for(let j=0; j<navi[nave]; j++) {
+            creaElemento("n"+i.toString(), ["nave", nave], parseInt(nave.slice(-1)));
+            i++;
+        }
+    }
+    let powerUps = gameData.powerUps;
+    i = 0;
+    for(let powerUp in powerUps) {
+        for(let j=0; j<powerUps[powerUp]; j++) {
+            creaElemento("p"+i.toString(), ["powerup", powerUp], 1);
+            i++;
+        }
+    }
+    /*creaElemento("n1", ["nave", "nave1"], 1);
+    creaElemento("n2", ["nave", "nave2"], 2);
+    creaElemento("n3", ["nave", "nave3"], 3);
+    creaElemento("n4", ["nave", "nave4"], 4);
+    creaElemento("n5", ["nave", "nave5"], 5);
+    creaElemento("p1", ["powerup", "powerupriga"], 1);
+    creaElemento("p2", ["powerup", "powerupcolonna"], 1);
+    creaElemento("p3", ["powerup", "powerupbomba"], 1);*/
+
+    riempiAreaNavi();
+
+    aggiungiEventListenerElementi();
+    aggiungiEventListenerCelle();
+    aggiungiEventListenerAreaNavi();
+}
 
 // Gestione della connessione degli utenti
-const socket = io("http://localhost:8000");
-//volendo si può testare il progetto sulla rete di casa, va inserito l'indirizzo ip locale del computer
-//const socket = io("http://192.168.1.201:8000");
-
-socket.emit("player", player); 
-socket.on("server", (msg) => {
-    if(msg==="in attesa dell'avversario") {
-        console.log(msg);
-        waitModal.show();
-    }
-    else if(msg==="avversario trovato") {
-        setTimeout(function() {
-            console.log(msg);
-            waitModal.hide();
-        }, 500); // ritardo di 0.5s inserito per far finire l'animazione di apertura della waitModale
-    }
+socket.on("nuovo-giocatore", (playerName) => {
+    console.log(`giocatore: ${playerName}`);
+    player = playerName;
+    $('#wait-modal').modal('show');
 });
+socket.on("avversario-trovato", (gameData, players) => {
+    avversario = players.filter(p => p!=player)[0];
+    console.log(`avversario trovato: ${avversario}`);
+    console.log(`impostazioni partita: ${gameData}`);
+    inizializzaCampo(gameData);
+    setTimeout(function() {
+        $('#wait-modal').modal('hide');
+    }, 500); // ritardo di 0.5s inserito per far finire l'animazione di apertura della finestra modale
+});
+
+// Gestione degli eventi di gioco
 socket.on("play", (player) => {
     iniziaPartita(player);
 });
@@ -391,6 +457,14 @@ socket.on("cambia-turno", () => {
 });
 socket.on("end", () => {
     console.log("hai vinto");
+    giocoFinito = true;
+    // Aggiornamento della classifica
+    $.ajax({
+        url: "updateRanking.php",
+        type: "POST",
+        data: {type: "win"},
+    });
+    $('#win-modal').modal('show');
 });
 
 // Gestione della chat utenti
@@ -423,5 +497,9 @@ bottoneInizio.addEventListener("click", function(event) {
 
 // Mostra un alert se durante la partita si cerca di ricaricare o cambiare pagina
 window.addEventListener("beforeunload", function(event) {
-    event.preventDefault();
+    if(!giocoFinito) {
+        event.preventDefault();
+    }
+});
+
 });

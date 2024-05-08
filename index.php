@@ -23,7 +23,7 @@
     <script src="https://cdn.socket.io/4.7.5/socket.io.min.js"></script>
 
     <!-- fontawesome kit -->
-    <script src="https://kit.fontawesome.com/977cc8c5e1.js" crossorigin="anonymous"></script>
+    <script src="https://kit.fontawesome.com/977cc8c5e1.js" crossorigin="anonymous" defer></script>
 
     <!-- project's resources -->
     <link rel="icon" href="assets/cruise.png">
@@ -161,8 +161,10 @@
     <div id="webpage-body">
         <h1>Battleship+</h1>
         <div class="d-flex justify-content-center gap-2">
-            <a class="btn btn-green" href="#">Crea Partita</a>
-            <a class="btn btn-green" href="game.php">Unisciti alla Partita</a>
+            <button id="bottone-crea-partita" type="button" class="btn btn-green" data-bs-toggle="modal" data-bs-target="#createGameModal">
+                Crea Partita
+            </button>
+            <a class="btn btn-green" href="saveGameData.php?mode=join">Unisciti alla Partita</a>
         </div>
     </div>
    
@@ -239,6 +241,118 @@
                                     <?php } ?>
                                 </div>
                             </div>   
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="createGameModal">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Crea la partita</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="form-crea-partita" action="saveGameData.php?mode=create" method="POST" autocomplete="off">
+                        <div class="mb-3">
+                            <label for="rangeCampo" class="form-label">Grandezza campo</label>
+                            <div class="d-flex gap-2">
+                                <input type="range" name="grandezzaCampo" id="rangeCampo" class="form-range" min="6" max="20" value="10"
+                                    oninput="this.nextElementSibling.value = this.value">
+                                <output>10</output>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col">
+                                <div class="mb-3">
+                                    <label for="rangeNave1" class="form-label">Navi da 1</label>
+                                    <div class="d-flex gap-2">
+                                        <input type="range" name="nave1" id="rangeNave1" class="form-range" min="0" max="4" value="1"
+                                            oninput="this.nextElementSibling.value = this.value">
+                                        <output>1</output>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col">
+                                <div class="mb-3">
+                                    <label for="rangeNave2" class="form-label">Navi da 2</label>
+                                    <div class="d-flex gap-2">
+                                        <input type="range" name="nave2" id="rangeNave2" class="form-range" min="0" max="4" value="1"
+                                            oninput="this.nextElementSibling.value = this.value">
+                                        <output>1</output>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col">
+                                <div class="mb-3">
+                                    <label for="rangeNave3" class="form-label">Navi da 3</label>
+                                    <div class="d-flex gap-2">
+                                        <input type="range" name="nave3" id="rangeNave3" class="form-range" min="0" max="4" value="1"
+                                            oninput="this.nextElementSibling.value = this.value">
+                                        <output>1</output>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col">
+                                <div class="mb-3">
+                                    <label for="rangeNave4" class="form-label">Navi da 4</label>
+                                    <div class="d-flex gap-2">
+                                        <input type="range" name="nave4" id="rangeNave4" class="form-range" min="0" max="4" value="1"
+                                            oninput="this.nextElementSibling.value = this.value">
+                                        <output>1</output>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col">
+                                <div class="mb-3">
+                                    <label for="rangeNave5" class="form-label">Navi da 5</label>
+                                    <div class="d-flex gap-2">
+                                        <input type="range" name="nave5" id="rangeNave5" class="form-range" min="0" max="4" value="1"
+                                            oninput="this.nextElementSibling.value = this.value">
+                                        <output>1</output>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col">
+                                <div class="mb-3">
+                                    <label for="rangePowerUpRiga" class="form-label">Powerup Riga</label>
+                                    <div class="d-flex gap-2">
+                                        <input type="range" name="powerup-riga" id="rangePowerUpRiga" class="form-range" min="0" max="4" value="1"
+                                            oninput="this.nextElementSibling.value = this.value">
+                                        <output>1</output>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col">
+                                <div class="mb-3">
+                                    <label for="rangePowerUpColonna" class="form-label">Powerup Colonna</label>
+                                    <div class="d-flex gap-2">
+                                        <input type="range" name="powerup-colonna" id="rangePowerUpColonna" class="form-range" min="0" max="4" value="1"
+                                            oninput="this.nextElementSibling.value = this.value">
+                                        <output>1</output>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col">
+                                <div class="mb-3">
+                                    <label for="rangePowerUpBomba" class="form-label">Powerup Bomba</label>
+                                    <div class="d-flex gap-2">
+                                        <input type="range" name="powerup-bomba" id="rangePowerUpBomba" class="form-range" min="0" max="4" value="1"
+                                            oninput="this.nextElementSibling.value = this.value">
+                                        <output>1</output>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <button type="submit" class="btn btn-green" name="crea">Crea Partita</button>
                     </form>
                 </div>
             </div>

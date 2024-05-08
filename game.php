@@ -24,17 +24,12 @@
     <script src="https://cdn.socket.io/4.7.5/socket.io.min.js"></script>
 
     <!-- fontawesome kit -->
-    <script src="https://kit.fontawesome.com/977cc8c5e1.js" crossorigin="anonymous"></script>
+    <script src="https://kit.fontawesome.com/977cc8c5e1.js" crossorigin="anonymous" defer></script>
 
     <!-- project's resources -->
     <link rel="icon" href="assets/cruise.png">
     <link rel="stylesheet" href="style.css">
-    
-    <!-- script to be loaded after page rendering -->
-    <script src="game.js" defer></script>
-    <script>
-        const username = '<?php echo isset($_SESSION['username']) ? $_SESSION['username'] : '';?>';
-    </script>
+    <script src="game.js"></script>
     
 </head>
 
@@ -104,12 +99,36 @@
         </div>
     </div>
 
-    <!-- modal window -->
-    <div class="modal fade" id="wait-modal">
+    <!-- modal windows -->
+    <div class="modal fade" id="wait-modal" data-bs-backdrop="static" data-bs-keyboard="false">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-body">
                     <h5 class="modal-title">In cerca di una partita...</h5>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="win-modal" data-bs-backdrop="static" data-bs-keyboard="false">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-body">
+                    <h5>Hai vinto!</h5>
+                    <div class="d-flex justify-content-center gap-2">
+                        <a class="btn btn-green" href="index.php">Torna alla Home</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="lost-modal" data-bs-backdrop="static" data-bs-keyboard="false">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-body">
+                    <h5>Hai perso!</h5>
+                    <div class="d-flex justify-content-center gap-2">
+                        <a class="btn btn-green" href="index.php">Torna alla Home</a>
+                    </div>
                 </div>
             </div>
         </div>

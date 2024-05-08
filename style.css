@@ -10,6 +10,18 @@
     --bs-navbar-toggler-border-color: rgb(0, 74, 173);
 }
 
+.modal-dialog {
+    top: 10%;
+}
+
+.form-range {
+    width: 95%;
+}
+output {
+    margin: 0px;
+    padding: 0px;
+}
+
 .btn-green {
     background-color: rgba(40, 167, 69, 1);
     padding-left: 20px;
@@ -97,6 +109,11 @@ h1 {
     text-align: center;
     font-size: xx-large;
     color: white;
+}
+
+h5 {
+    text-align: center;
+    color: black;
 }
 
 #area-gioco {
@@ -229,10 +246,7 @@ h1 {
 }
 
 #area-giocatore {
-    /*width: max(100%, 200px);*/
-    /*min-width: 200px;*/
     margin: 10px;
-    /*margin-right: 0px;*/
     padding: 0px;
     display: flex;
     flex-direction: column;
@@ -260,16 +274,14 @@ h1 {
 }
 
 #area-avversario {
-    /*min-width: 200px;*/
     margin: 10px;
-    /*margin-left: 0px;*/
     padding: 0px;
     display: flex;
     flex-direction: column;
 }
 
 #area-powerup {
-    aspect-ratio: 3/1;
+    aspect-ratio: 4/1;
     width: auto;
     height: auto;
     margin: 10px;
@@ -309,8 +321,9 @@ h1 {
 }
 
 .cella {
+    aspect-ratio: 1/1;
     width: 10%;
-    height: 10%;
+    height: auto;
     border: solid 1px black;
 }
 
@@ -342,24 +355,24 @@ h1 {
     background-color: rgb(0, 74, 173);
 }
 
-/* media query for modal window position on mobile screens */
+/* media query for small screens */
 @media screen and (max-width: 768px) {
     .modal-dialog {
-        top: 35%;
+        top: 20%;
     }
 
     #area-battaglia {
-        width: auto;
+        width: 100%;
         margin: 0px;
     }
 
     #area-giocatore {
-        min-width: 290px;
+        min-width: 100%;
         margin: 0px;
     }
 
     #area-avversario {
-        min-width: 290px;
+        min-width: 100%;
         margin: 0px;
     }
 

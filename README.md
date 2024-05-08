@@ -13,12 +13,8 @@ Prima di configurare il progetto assicurarsi di aver installato XAMPP e NodeJS
         - Reset password
         - Cambio password
         - Caricare immagine profilo
-    - Includere elementi comuni (navbar) dal server?
 - Area di gioco
     - Timer
     - Popups
-    - Bordi navi
-- NodeJS
-    - Configurazione partita
-    - Risultato fine partita
+    - Bordi navi e powerup
 - Regole
