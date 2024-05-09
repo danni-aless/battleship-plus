@@ -104,7 +104,7 @@ function trovaElemento(id) {
 function togliElemento(elem) {
     for(let id of elem.celle) {
         const cella = document.getElementById(id);
-        cella.classList.remove("cella-piena", "cella-nave", "cella-powerup");
+        cella.className = "cella";
     }
     elem.celle.length = 0;
 }
@@ -133,10 +133,21 @@ function posizionaElemento(elem, id) {
     for(let i=0; i<elem.lunghezza; i++) {
         const idCella = player+index.toString();
         const cella = document.getElementById(idCella);
+        if(i===0) {
+            cella.classList.add("inizio");
+        }
+        if(i===elem.lunghezza-1) {
+            cella.classList.add("fine");
+        }
+        if(elem.rotazione===0) {
+            cella.classList.add("orizzontale");
+        } else {
+            cella.classList.add("verticale");
+        }
         if(elem.div.classList.contains("nave")) {
             cella.classList.add("cella-piena", "cella-nave");
         } else if(elem.div.classList.contains("powerup")) {
-            cella.classList.add("cella-piena", "cella-powerup");
+            cella.classList.add("cella-piena", "cella-powerup", elem.classe[1]);
         }
         elem.celle.push(idCella);
         if(elem.rotazione===0)
@@ -154,19 +165,34 @@ let player = null;
 let avversario = null;
 let turno = null;
 
+function stampaMessaggio(msg) {
+    if(!giocoFinito) {
+        const message = document.createElement("div");
+        const date = new Date();
+        const hours = String(date.getHours()).padStart(2, '0');
+        const minutes = String(date.getMinutes()).padStart(2, '0');
+        const seconds = String(date.getSeconds()).padStart(2, '0');
+        const time = `${hours}:${minutes}:${seconds}`;
+        message.innerHTML = `<i>(${time})</i> ${msg}`;
+        document.getElementById("storico-messaggi").prepend(message);
+    }
+}
+
 function cambiaTurno() {
     turno = turno==="g" ? "a" : "g";
+    const message = turno==="g" ? "<b>È il tuo turno!</b>" : "<b>È il turno dell'avversario</b>";
+    stampaMessaggio(message);
 }
 
 function iniziaPartita(firstPlayer) {
-    console.log(`inizia ${firstPlayer}`);
     turno = firstPlayer===player ? "g" : "a";
     giocoIniziato = true;
-    console.log(`partita iniziata, turno: ${turno}`);
+    stampaMessaggio("<b>Partita iniziata!</b>")
+    const message = turno==="g" ? "<b>È il tuo turno!</b>" : "<b>È il turno dell'avversario</b>";
+    stampaMessaggio(message);
 }
 
 function terminaPartita() {
-    console.log("hai perso");
     giocoFinito = true;
     socket.emit("end");
     // Aggiornamento della classifica
@@ -181,6 +207,7 @@ function terminaPartita() {
 // Funzioni per le meccaniche base di gioco
 function affondaNave(nave) {
     nave.affondata = true;
+    socket.emit("nave-affondata");
     if(elementi.filter(e => e.div.classList.contains("nave")).length===elementi.filter(e => e.affondata && e.div.classList.contains("nave")).length) {
         terminaPartita();
     }
@@ -224,12 +251,13 @@ function recuperaPowerUp(classePowerUp) {
     col.classList.add("col");
     col.append(powerUp.div);
     row.append(col);
+    
+    stampaMessaggio(`<b>Powerup ${classePowerUp[1].match(/powerup(\w+)/)[1]} trovato!</b>`);
 }
 
 function usaPowerUp(powerUp, id) {
     const player = id.match(/([ga])(\d+)/)[1];
     let index = Number(id.match(/([ga])(\d+)/)[2]);
-    // verifica del powerup usato, si potrebbe migliorare
     if(powerUp.classe.includes("powerupriga")) {
         let start = index-index%width;
         let end = index-index%width+width-1;
@@ -261,7 +289,7 @@ function usaPowerUp(powerUp, id) {
             }
         }
     }
-    console.log(`${powerUp.classe[1]} usato`);
+    stampaMessaggio(`<b>Powerup ${powerUp.classe[1].match(/powerup(\w+)/)[1]} usato</b>`);
 }
 
 // Funzione per controllo sul bottone di inizio partita
@@ -346,14 +374,18 @@ function aggiungiEventListenerCelle() {
             if(giocoIniziato && powerUp!=null && powerUp.div.classList.contains("powerup") && cellaAttiva(event.target)) {
                 usaPowerUp(powerUp, event.target.id);
                 powerUp.div.parentNode.remove();
-                socket.emit("cambia-turno");
+                setTimeout(function() {
+                    socket.emit("cambia-turno");
+                }, 100); // ritardo di 0.1s inserito per ricevere prima l'evento risposta-colpo
             }
         });
         cella.addEventListener("click", function(event) {
             if(giocoIniziato && cellaAttiva(event.target)) {
                 let index = event.target.id.match(/([ga])(\d+)/)[2];
                 socket.emit("colpo", index);
-                socket.emit("cambia-turno"); // vedere se funziona con il fine partita
+                setTimeout(function() {
+                    socket.emit("cambia-turno");
+                }, 100); // ritardo di 0.1s inserito per ricevere prima l'evento risposta-colpo
             }
         });
     }
@@ -366,10 +398,12 @@ function aggiungiEventListenerAreaNavi() {
     areaNavi.addEventListener("drop", function(event) {
         const nome = event.dataTransfer.getData("text/plain");
         const elemento = elementi.find(elem => elem.nome===nome);
-        if(!giocatorePronto && !giocoIniziato && elemento!=null && elemento.div.parentNode===null) {
+        if(!giocatorePronto && !giocoIniziato && elemento!=null) {
             togliElemento(elemento);
-            document.querySelector("#area-navi > .row > .col:empty").append(elemento.div);
-            controllaBottoneInizio();
+            if(elemento.div.parentNode===null) {
+                document.querySelector("#area-navi > .row > .col:empty").append(elemento.div);
+                controllaBottoneInizio();
+            }
         }
     });
 }
@@ -396,14 +430,6 @@ function inizializzaCampo(gameData) {
             i++;
         }
     }
-    /*creaElemento("n1", ["nave", "nave1"], 1);
-    creaElemento("n2", ["nave", "nave2"], 2);
-    creaElemento("n3", ["nave", "nave3"], 3);
-    creaElemento("n4", ["nave", "nave4"], 4);
-    creaElemento("n5", ["nave", "nave5"], 5);
-    creaElemento("p1", ["powerup", "powerupriga"], 1);
-    creaElemento("p2", ["powerup", "powerupcolonna"], 1);
-    creaElemento("p3", ["powerup", "powerupbomba"], 1);*/
 
     riempiAreaNavi();
 
@@ -421,7 +447,6 @@ socket.on("nuovo-giocatore", (playerName) => {
 socket.on("avversario-trovato", (gameData, players) => {
     avversario = players.filter(p => p!=player)[0];
     console.log(`avversario trovato: ${avversario}`);
-    console.log(`impostazioni partita: ${gameData}`);
     inizializzaCampo(gameData);
     setTimeout(function() {
         $('#wait-modal').modal('hide');
@@ -436,9 +461,10 @@ socket.on("colpo", (index) => {
     const idCella = "g"+index;
     colpisciElemento(idCella);
     const classeElemento = trovaElemento(idCella) ? trovaElemento(idCella).classe : [];
+    const classeCella = [...(document.getElementById(idCella).classList)].filter(c => c!="inizio" && c!="fine" && c!="orizzontale" && c!="verticale");
     const msg = {
         id: index,
-        classeCella: document.getElementById(idCella).className,
+        classeCella: classeCella.join(" "),
         classePowerUp: classeElemento.includes("powerup") ? classeElemento : []
     };
     socket.emit("risposta-colpo", msg);
@@ -453,10 +479,8 @@ socket.on("risposta-colpo", (msg) => {
 });
 socket.on("cambia-turno", () => {
     cambiaTurno();
-    console.log(`turno: ${turno}`);
 });
 socket.on("end", () => {
-    console.log("hai vinto");
     giocoFinito = true;
     // Aggiornamento della classifica
     $.ajax({
@@ -473,14 +497,13 @@ const inputChat = document.getElementById("input-chat");
 formChat.addEventListener("submit", function(event) {
     event.preventDefault();
     if(inputChat.value) {
-        socket.emit("chat", `${player}: ${inputChat.value}`);
+        socket.emit("chat", `<b>${player}:</b> ${inputChat.value}`);
         inputChat.value = "";
     }
 });
 socket.on("chat", (msg) => {
-    const message = document.createElement("div");
-    message.innerHTML = msg.replace(player, "Tu"); // vedere se conviene scrivere "tu" o il nome del player
-    document.getElementById("storico-messaggi").prepend(message);
+    const message = msg.replace(player, "Tu"); // vedere se conviene scrivere "tu" o il nome del player
+    stampaMessaggio(message);
 });
 
 // Associazione degli EventListener al bottone "Inizia la partita"

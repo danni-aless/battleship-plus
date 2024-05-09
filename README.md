@@ -15,6 +15,4 @@ Prima di configurare il progetto assicurarsi di aver installato XAMPP e NodeJS
         - Caricare immagine profilo
 - Area di gioco
     - Timer
-    - Popups
-    - Bordi navi e powerup
 - Regole

@@ -92,6 +92,9 @@ io.on("connection", (socket) => {
     socket.on("chat", (msg) => {
         io.to(stanza.nome).emit("chat", msg);
     });
+    socket.on("nave-affondata", () => {
+        socket.broadcast.emit("chat", "<b>Nave nemica affondata!</b>");
+    });
     socket.on("disconnect", () => {
         /*socket.leave(stanza.nome);*/
         stanza.postiDisponibili++;
