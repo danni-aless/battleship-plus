@@ -518,3 +518,27 @@ h5 {
     font-size: 24px;
     cursor: pointer;
 }
+
+.rounded-img {
+    width: 40px;
+    height: 40px;
+    overflow: hidden;
+    border-radius: 50%;
+}
+.rounded-img img {
+    width: 100%;
+    height: auto;
+}
+
+.profilepopup .rounded-img {
+    width: 100px;
+    height: 100px; 
+    overflow: hidden;
+    border-radius: 50%;
+}
+.popup .rounded-img {
+    width: 80px;
+    height: 80px; 
+    overflow: hidden;
+    border-radius: 50%;
+}

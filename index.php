@@ -137,7 +137,9 @@
                     <?php if (isset($_SESSION['logged_in']) && $_SESSION['logged_in'] == true) {  ?>
                         <?php if(isset($_SESSION['image']) && $_SESSION['image'] != "default.jpg") { ?>
                             <button type="button" class="btn btn-profile" onclick="openPopUp('popup')">
-                                <img src="img/<?php echo $_SESSION['image']; ?>" width="30" height="30">
+                            <div class="rounded-img">
+                                <img src="img/<?php echo $_SESSION['image']; ?>">
+                            </div>
                             </button>
                         <?php } else { ?>
                             <button type="button" class="btn btn-green btn-circle" onclick="openPopUp('popup')">
@@ -173,7 +175,9 @@
             <span class="closebtn" onclick="closePopUp('popup')">&times;</span>
             <div class="d-flex justify-content-center">
                 <?php if(isset($_SESSION['image']) && $_SESSION['image'] != "default.jpg") { ?>
-                    <img src="img/<?php echo $_SESSION['image']; ?>" width="70" height="70">
+                    <div class="rounded-img">
+                        <img src="img/<?php echo $_SESSION['image']; ?>">
+                    </div>
                 <?php } else { ?>
                     <div class="profile-image">
                         <?php echo substr($_SESSION['username'], 0, 1); ?>
@@ -196,7 +200,9 @@
             <span class="closebtn" onclick="closePopUp('profilePopUp')">&times;</span>
             <div class="d-flex justify-content-center">
                 <?php if(isset($_SESSION['image']) && $_SESSION['image'] != "default.jpg") { ?>
-                    <img src="img/<?php echo $_SESSION['image']; ?>" width="70" height="70">
+                    <div class="rounded-img">
+                        <img src="img/<?php echo $_SESSION['image']; ?>">
+                    </div>
                 </form>
                 <?php } else { ?>
                     <div class="profile-image mb-2">
