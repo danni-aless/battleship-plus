@@ -16,12 +16,13 @@ app.get("/", (req, res) => {
 });
 
 class Stanza {
-    constructor() {
+    constructor(settings) {
         this.nome = Math.random().toString(36).slice(2, 7);
         this.posti = 2;
         this.postiDisponibili = 2;
         this.giocatori = [];
         this.giocatoriPronti = 0;
+        this.settings = settings;
         this.turno = "";
     }
 }
@@ -36,31 +37,38 @@ function trovaStanza() {
     return null;
 }
 
-function creaStanza() {
-    let nuovaStanza = new Stanza();
+function creaStanza(settings) {
+    let nuovaStanza = new Stanza(settings);
     stanze.push(nuovaStanza);
     return nuovaStanza;
 }
 
-function aggiungiGiocatore(player, socket) {
-    let stanza = trovaStanza();
-    if(!stanza) stanza = creaStanza();
+function aggiungiGiocatore(player, socket, stanza) {
     stanza.postiDisponibili--;
     stanza.giocatori.push(player);
     socket.join(stanza.nome);
     console.log(`player ${player} connected to room ${stanza.nome}`);
-    return stanza;
 }
 
 io.on("connection", (socket) => {
     let stanza, player;
-    socket.on("player", (playerName) => {
-        player = playerName;
-        stanza = aggiungiGiocatore(player, socket);
-        if(stanza.postiDisponibili) {
-            socket.emit("server", "in attesa dell'avversario");
+    socket.on("nuovo-giocatore", (gameData) => {
+        if(gameData.username==="") gameData.username = "user-" + Math.random().toString(36).slice(2, 7);
+        player = gameData.username;
+        let settings = gameData.settings;
+        if(settings.mode==="create") {
+            stanza = creaStanza(settings);
+        } else if(settings.mode==="join") {
+            stanza = trovaStanza();
+            if(!stanza) stanza = creaStanza(settings);
         } else {
-            io.to(stanza.nome).emit("server", "avversario trovato");
+            console.log(`player ${player} didn't specify a mode`);
+            return;
+        }
+        aggiungiGiocatore(player, socket, stanza);
+        socket.emit("nuovo-giocatore", player);
+        if(!stanza.postiDisponibili) {
+            io.to(stanza.nome).emit("avversario-trovato", stanza.settings, stanza.giocatori);
         }
     });
     socket.on("pronto", (msg) => {
@@ -84,15 +92,22 @@ io.on("connection", (socket) => {
     socket.on("chat", (msg) => {
         io.to(stanza.nome).emit("chat", msg);
     });
+    socket.on("nave-affondata", () => {
+        socket.broadcast.emit("chat", "<b>Nave nemica affondata!</b>");
+    });
     socket.on("disconnect", () => {
         /*socket.leave(stanza.nome);*/
         stanza.postiDisponibili++;
         stanza.giocatori.splice(stanza.giocatori.indexOf(player), 1);
         stanza.giocatoriPronti--;
+        stanza.settings = {};
         console.log(`player ${player} disconnected`);
+        if(stanza.giocatori.length===0) {
+            stanze.splice(stanze.indexOf(stanza), 1);
+        }
     });
 });
 
 server.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
+    console.log(`Server running on port ${PORT}`);
 });
