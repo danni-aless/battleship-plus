@@ -383,7 +383,25 @@ h1 {
     padding: 6px 0px;
     border-radius: 50%;
     font-size: 20px;
+    font-weight: bold;
+    text-transform: uppercase; 
     background-color: rgba(40, 167, 69, 1);
+    display: flex;
+    align-items: center;
+}
+
+.profile-image {
+    width: 80px; 
+    height: 80px;
+    border-radius: 50%;
+    background-color: #28a745; 
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: #fff;
+    font-size: 24px;
+    font-weight: bold;
+    text-transform: uppercase; 
 }
 
 .profile-text{
@@ -393,12 +411,28 @@ h1 {
     transform: translate(-50%, -50%);
     color: white;
 }
-
+.popup .btn {
+    margin-bottom: 10px;
+}
+.profilepopup {
+    display: none;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: white;
+    border: 1px solid #ccc;
+    padding: 20px;
+    z-index: 9999;
+    border-radius: 10px;
+    width: 300px;
+    height: 400px;
+}
 .popup {
     display: none;
     position: fixed;
     margin-top: 100px;
-    top: 80px;
+    top: 140px;
     right: 20px;
     transform: translateY(-50%);
     background-color: white;
@@ -407,7 +441,7 @@ h1 {
     z-index: 9999;
     border-radius: 10px;
     width: 300px;
-    height: 200px;
+    height: auto;
 }
 
 .popup-content {

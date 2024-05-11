@@ -19,10 +19,11 @@
                 $_SESSION['username'] =  $row['username'];
                 $_SESSION['email'] =  $row['email'];
                 $_SESSION['password'] =  $row['password'];
+                $_SESSION['image'] =  $row['image'];
             }else{
                 $_SESSION['login_err_msg'] =  "Email o Password Errati!";
             }
-             header("location:index.php");
+            header("location:index.php");
         }
         
     ?>

@@ -19,6 +19,7 @@
                 $_SESSION['username'] =  $username;
                 $_SESSION['email'] =  $email;
                 $_SESSION['password'] =  $password;
+                $_SESSION['image'] =  $image;
             }else{
                 $_SESSION['signup_err_msg'] =  "Email o Username Non Disponibili!";
             }

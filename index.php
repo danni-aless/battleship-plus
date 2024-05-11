@@ -40,6 +40,30 @@
     </script>
     <script>
     $(function() {
+        <?php if ((isset($_SESSION['err_image']) && $_SESSION['err_image'] != "")) { ?>
+            openPopUp('popup');
+            openPopUp('profilePopUp');
+        <?php } ?>
+    });
+    </script>
+    <script>
+    $(function() {
+        <?php if (isset($_SESSION['edit_err_msg']) && $_SESSION['edit_err_msg'] == "Email Non Disponibile!") { ?>
+            openPopUp('popup');
+            $("#editMailBtn").click();
+        <?php } ?>
+        <?php if (isset($_SESSION['edit_err_msg']) && $_SESSION['edit_err_msg'] == "Username Non Disponibile!") { ?>
+            openPopUp('popup');
+            $("#editUsernameBtn").click();
+        <?php } ?>
+        <?php if (isset($_SESSION['edit_err_msg']) && $_SESSION['edit_err_msg'] == "La nuova password deve essere diversa dalla password attuale!") { ?>
+            openPopUp('popup');
+            $("#editPasswordBtn").click();
+        <?php } ?>
+    });
+    </script>
+    <script>
+    $(function() {
         <?php if (isset($_SESSION['login_err_msg']) && $_SESSION['login_err_msg'] != "") { ?>
             $("#login").click();
         <?php } ?>
@@ -53,12 +77,12 @@
     });
     </script>
     <script>
-    function openPopUp() {
-        document.getElementById('popup').style.display = 'block';
+    function openPopUp(PopUpId) {
+        document.getElementById(PopUpId).style.display = 'block';
     }
 
-    function closePopUp() {
-        document.getElementById('popup').style.display = 'none';
+    function closePopUp(PopUpId) {
+        document.getElementById(PopUpId).style.display = 'none';
     }
     </script>
     <script>
@@ -82,11 +106,7 @@
         $(this).addClass("active");
     });
 });
-
 </script>
-
-</head>
-
 <body>
     <!-- navigation bar -->
     <nav class="navbar navbar-expand-md">
@@ -95,7 +115,7 @@
                 <img src="assets/cruise.png" alt="Battleship+" width="30" height="30">
             </a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
-                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
@@ -114,27 +134,33 @@
                 </div>
                 <div class="d-flex justify-content-center">
                     <ul class="navbar-nav">
-                        <?php if (isset($_SESSION['logged_in']) && $_SESSION['logged_in'] == true) {  ?>
-                            <button type="button" class="btn btn-green btn-circle" onclick="openPopUp()"><?php
-                                    echo "<div class=\"profile-text\">" . substr($_SESSION['username'], 0, 1) . "</div>"; ?>
+                    <?php if (isset($_SESSION['logged_in']) && $_SESSION['logged_in'] == true) {  ?>
+                        <?php if(isset($_SESSION['image']) && $_SESSION['image'] != "default.jpg") { ?>
+                            <button type="button" class="btn btn-profile" onclick="openPopUp('popup')">
+                                <img src="img/<?php echo $_SESSION['image']; ?>" width="30" height="30">
                             </button>
-                                <li>
-                                <form name="logoutForm" action="logout.php" method="POST">
-                                    <button type="submit" class="btn btn-blue">
-                                        <?php echo "Logout"; ?>
-                                    </button>
-                                </form>
-                                </li>
-                            <?php } else { ?>
-                                <li>
-                                    <button id="signup" type="button" class="btn btn-blue" data-bs-toggle="modal" data-bs-target="#signupModal">
-                                        Iscriviti
-                                    </button>
-                                    <button id="login" type="button" class="btn btn-green" data-bs-toggle="modal" data-bs-target="#loginModal">
-                                        Login
-                                    </button>
-                                </li>
-                            <?php }  ?>
+                        <?php } else { ?>
+                            <button type="button" class="btn btn-green btn-circle" onclick="openPopUp('popup')">
+                                <?php echo "<div class=\"profile-text\">" . substr($_SESSION['username'], 0, 1) . "</div>"; ?>
+                            </button>
+                        <?php } ?>
+                    <li>
+                        <form name="logoutForm" action="logout.php" method="POST">
+                            <button type="submit" class="btn btn-blue">
+                                <?php echo "Logout"; ?>
+                            </button>
+                        </form>
+                    </li>
+                    <?php } else { ?>
+                    <li>
+                        <button id="signup" type="button" class="btn btn-blue" data-bs-toggle="modal" data-bs-target="#signupModal">
+                        Iscriviti
+                        </button>
+                        <button id="login" type="button" class="btn btn-green" data-bs-toggle="modal" data-bs-target="#loginModal">
+                        Login
+                        </button>
+                        </li>
+                        <?php }  ?>
                     </ul>
                 </div>
             </div>
@@ -142,20 +168,56 @@
     </nav>
 
     <!-- Pop Up Profile -->
-<div id="popup" class="popup">
-    <div class="popup-content">
-        <span class="closebtn" onclick="closePopUp()">&times;</span>
-        <div class="d-flex justify-content-center">
-            <button type="button" class="btn btn-green btn-circle" onclick="openPopUp()">
-                <?php echo "<div class=\"profile-text\">" . substr($_SESSION['username'], 0, 1) . "</div>"; ?>
-            </button>
-        </div>
-        <div class="text-center mt-2">
-            <?php echo $_SESSION['username']; ?>
+    <div id="popup" class="popup">
+        <div class="popup-content">
+            <span class="closebtn" onclick="closePopUp('popup')">&times;</span>
+            <div class="d-flex justify-content-center">
+                <?php if(isset($_SESSION['image']) && $_SESSION['image'] != "default.jpg") { ?>
+                    <img src="img/<?php echo $_SESSION['image']; ?>" width="70" height="70">
+                <?php } else { ?>
+                    <div class="profile-image">
+                        <?php echo substr($_SESSION['username'], 0, 1); ?>
+                    </div>
+                <?php } ?>
+            </div>
+            <div class="text-center mt-2">
+                <?php echo $_SESSION['username']; ?>
+            </div>
+            <button type="button" class="btn btn-green" onclick="openPopUp('profilePopUp')">Cambia Immagine Profilo</button>
+            <button id = "editMailBtn" type="button" class="btn btn-green" data-bs-toggle="modal" data-bs-target="#editEmail">Cambia Email</button>
+            <button id = "editUsernameBtn" type="button" class="btn btn-green" data-bs-toggle="modal" data-bs-target="#editUsername">Cambia Username</button>
+            <button id = "editPasswordBtn" type="button" class="btn btn-green" data-bs-toggle="modal" data-bs-target="#editPassword">Cambia Password</button>
         </div>
     </div>
-</div>
 
+    <!-- Profile Image PopUp -->
+    <div id="profilePopUp" class="profilepopup">
+        <div class="popup-content">
+            <span class="closebtn" onclick="closePopUp('profilePopUp')">&times;</span>
+            <div class="d-flex justify-content-center">
+                <?php if(isset($_SESSION['image']) && $_SESSION['image'] != "default.jpg") { ?>
+                    <img src="img/<?php echo $_SESSION['image']; ?>" width="70" height="70">
+                </form>
+                <?php } else { ?>
+                    <div class="profile-image mb-2">
+                        <?php echo substr($_SESSION['username'], 0, 1); ?>
+                    </div>
+                <?php } ?>
+            </div>
+                <form id="formImage" action="updatePhoto.php" method="post" enctype="multipart/form-data">
+                    <input type="file" name="fileToUpload" id="fileToUpload" accept=".jpg, .jpeg, .png">
+                </form>
+                <script type="text/javascript">
+                    document.getElementById("fileToUpload").onchange = function(){
+                        document.getElementById("formImage").submit();
+                    };
+                </script>
+                <?php if(isset($_SESSION['err_image']) && $_SESSION['err_image'] != ""){ ?>
+                    <div class="alert alert-danger" role="alert"><?php echo $_SESSION['err_image']; ?></div>
+                <?php $_SESSION['err_image'] = ""; ?>
+                <?php } ?>
+        </div>
+    </div>
 
     <!-- webpage body -->
     <div id="webpage-body">
@@ -167,6 +229,93 @@
     </div>
    
     <!-- modal windows -->
+    <div class="modal fade" id="editEmail">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Cambia Email</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form name="editForm" action="edituser.php" method="POST">
+                        <div class="mb-3">
+                            <input type="email" name="inputEmail" class="form-control" placeholder="Nuova Email"
+                                required>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-3">
+                                <button type="submit" class="btn btn-green" name="editEmail">Aggiorna</button>
+                            </div>
+                            <div class="col-md-9">
+                                <?php if(isset($_SESSION['edit_err_msg']) && $_SESSION['edit_err_msg'] == "Email Non Disponibile!"){ ?>
+                                    <div class="alert alert-danger" role="alert"><?php echo $_SESSION['edit_err_msg']; ?></div>
+                                <?php $_SESSION['edit_err_msg'] = ""; ?>
+                                <?php } ?>
+                            </div>
+                        </div> 
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="editUsername">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Cambia Username</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form name="editForm" action="edituser.php" method="POST">
+                        <div class="mb-3">
+                            <input type="text" name="inputUsername" class="form-control" placeholder="Nuovo Username"
+                                required>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-3">
+                                <button type="submit" class="btn btn-green" name="editUsername">Aggiorna</button>
+                            </div>
+                            <div class="col-md-9">
+                                <?php if(isset($_SESSION['edit_err_msg']) && $_SESSION['edit_err_msg'] == "Username Non Disponibile!"){ ?>
+                                    <div class="alert alert-danger" role="alert"><?php echo $_SESSION['edit_err_msg']; ?></div>
+                                <?php $_SESSION['edit_err_msg'] = ""; ?>
+                                <?php } ?>
+                            </div>
+                        </div> 
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="editPassword">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Cambia Password</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form name="editForm" action="edituser.php" method="POST">
+                        <div class="mb-3">
+                            <input type="text" name="inputPassword" class="form-control" placeholder="Nuova Password"
+                                required>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-3">
+                                <button type="submit" class="btn btn-green" name="editPassword">Aggiorna</button>
+                            </div>
+                            <div class="col-md-9">
+                                <?php if(isset($_SESSION['edit_err_msg']) && $_SESSION['edit_err_msg'] == "La nuova password deve essere diversa dalla password attuale!"){ ?>
+                                    <div class="alert alert-danger" role="alert"><?php echo $_SESSION['edit_err_msg']; ?></div>
+                                <?php $_SESSION['edit_err_msg'] = ""; ?>
+                                <?php } ?>
+                            </div>
+                        </div> 
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
     <div class="modal fade" id="signupModal">
         <div class="modal-dialog">
             <div class="modal-content">
