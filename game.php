@@ -51,7 +51,7 @@
                             <a class="nav-link" href="index.php">Home</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="rules.html">Regole</a>
+                            <a class="nav-link" href="rules.php">Regole</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link" href="ranking.php">Classifica</a>

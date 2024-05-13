@@ -97,6 +97,16 @@
             },
         });
     });
+    $('#regole').click(function(e) {
+        e.preventDefault(); 
+        $.ajax({
+            type: 'GET',
+            url: 'rules.php',
+            success: function(data) {
+                $('#webpage-body').html(data);
+            },
+        });
+    });
 });
 </script>
 <script>
@@ -125,7 +135,7 @@
                             <a class="nav-link active" aria-current="page" href="index.php">Home</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="rules.html">Regole</a>
+                            <a id="regole" class="nav-link" href="#">Regole</a>
                         </li>
                         <li class="nav-item">
                             <a id="classifica" class="nav-link" href="#">Classifica</a>
@@ -134,6 +144,7 @@
                 </div>
                 <div class="d-flex justify-content-center">
                     <ul class="navbar-nav">
+                    <li>
                     <?php if (isset($_SESSION['logged_in']) && $_SESSION['logged_in'] == true) {  ?>
                         <?php if(isset($_SESSION['image']) && $_SESSION['image'] != "default.jpg") { ?>
                             <button type="button" class="btn btn-profile" onclick="openPopUp('popup')">
@@ -142,10 +153,13 @@
                             </div>
                             </button>
                         <?php } else { ?>
+                            <div class="d-flex justify-content-center">
                             <button type="button" class="btn btn-green btn-circle" onclick="openPopUp('popup')">
                                 <?php echo "<div class=\"profile-text\">" . substr($_SESSION['username'], 0, 1) . "</div>"; ?>
                             </button>
+                            </div>
                         <?php } ?>
+                        </li>
                     <li>
                         <form name="logoutForm" action="logout.php" method="POST">
                             <button type="submit" class="btn btn-blue">
