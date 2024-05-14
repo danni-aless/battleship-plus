@@ -29,94 +29,72 @@
     <link rel="icon" href="assets/cruise.png">
     <link rel="stylesheet" href="style.css">
     <script>
-    function showPass(inputId) {
-    var x = document.getElementById(inputId);
-    if (x.type === "password") {
-        x.type = "text";
-    } else {
-        x.type = "password";
-    }
-    }
+        function showPass(inputId) {
+            var x = document.getElementById(inputId);
+            if (x.type === "password") {
+                x.type = "text";
+            } else {
+                x.type = "password";
+            }
+        }
+        $(document).ready(function() {
+            <?php if ((isset($_SESSION['err_image']) && $_SESSION['err_image'] != "")) { ?>
+                openPopUp('popup');
+                $("#editImageBtn").click();
+            <?php } ?>
+            <?php if (isset($_SESSION['edit_err_msg']) && $_SESSION['edit_err_msg'] == "Email Non Disponibile!") { ?>
+                openPopUp('popup');
+                $("#editMailBtn").click();
+            <?php } ?>
+            <?php if (isset($_SESSION['edit_err_msg']) && $_SESSION['edit_err_msg'] == "Username Non Disponibile!") { ?>
+                openPopUp('popup');
+                $("#editUsernameBtn").click();
+            <?php } ?>
+            <?php if (isset($_SESSION['edit_err_msg']) && $_SESSION['edit_err_msg'] == "La nuova password deve essere diversa dalla password attuale!") { ?>
+                openPopUp('popup');
+                $("#editPasswordBtn").click();
+            <?php } ?>
+            <?php if (isset($_SESSION['login_err_msg']) && $_SESSION['login_err_msg'] != "") { ?>
+                $("#login").click();
+            <?php } ?>
+            <?php if (isset($_SESSION['signup_err_msg']) && $_SESSION['signup_err_msg'] != "") { ?>
+                $("#signup").click();
+            <?php } ?>
+            $('#classifica').click(function(e) {
+                e.preventDefault(); 
+                $.ajax({
+                    type: 'GET',
+                    url: 'ranking.php',
+                    success: function(data) {
+                        $('#webpage-body').html(data);
+                    }
+                });
+            });
+            $('#regole').click(function(e) {
+                e.preventDefault(); 
+                $.ajax({
+                    type: 'GET',
+                    url: 'rules.php',
+                    success: function(data) {
+                        $('#webpage-body').html(data);
+                    },
+                });
+            });
+            $(".nav-link").click(function() {
+                $(".nav-link").removeClass("active");
+                $(this).addClass("active");
+            });
+        });
+        function openPopUp(PopUpId) {
+            document.getElementById(PopUpId).style.display = 'block';
+        }
+        function closePopUp(PopUpId) {
+            document.getElementById(PopUpId).style.display = 'none';
+        }
     </script>
-    <script>
-    $(function() {
-        <?php if ((isset($_SESSION['err_image']) && $_SESSION['err_image'] != "")) { ?>
-            openPopUp('popup');
-            openPopUp('profilePopUp');
-        <?php } ?>
-    });
-    </script>
-    <script>
-    $(function() {
-        <?php if (isset($_SESSION['edit_err_msg']) && $_SESSION['edit_err_msg'] == "Email Non Disponibile!") { ?>
-            openPopUp('popup');
-            $("#editMailBtn").click();
-        <?php } ?>
-        <?php if (isset($_SESSION['edit_err_msg']) && $_SESSION['edit_err_msg'] == "Username Non Disponibile!") { ?>
-            openPopUp('popup');
-            $("#editUsernameBtn").click();
-        <?php } ?>
-        <?php if (isset($_SESSION['edit_err_msg']) && $_SESSION['edit_err_msg'] == "La nuova password deve essere diversa dalla password attuale!") { ?>
-            openPopUp('popup');
-            $("#editPasswordBtn").click();
-        <?php } ?>
-    });
-    </script>
-    <script>
-    $(function() {
-        <?php if (isset($_SESSION['login_err_msg']) && $_SESSION['login_err_msg'] != "") { ?>
-            $("#login").click();
-        <?php } ?>
-    });
-    </script>
-    <script>
-    $(function() {
-        <?php if (isset($_SESSION['signup_err_msg']) && $_SESSION['signup_err_msg'] != "") { ?>
-            $("#signup").click();
-        <?php } ?>
-    });
-    </script>
-    <script>
-    function openPopUp(PopUpId) {
-        document.getElementById(PopUpId).style.display = 'block';
-    }
 
-    function closePopUp(PopUpId) {
-        document.getElementById(PopUpId).style.display = 'none';
-    }
-    </script>
-    <script>
-    $(document).ready(function() {
-    $('#classifica').click(function(e) {
-        e.preventDefault(); 
-        $.ajax({
-            type: 'GET',
-            url: 'ranking.php',
-            success: function(data) {
-                $('#webpage-body').html(data);
-            },
-        });
-    });
-    $('#regole').click(function(e) {
-        e.preventDefault(); 
-        $.ajax({
-            type: 'GET',
-            url: 'rules.php',
-            success: function(data) {
-                $('#webpage-body').html(data);
-            },
-        });
-    });
-});
-</script>
-<script>
-    $(document).ready(function() {
-    $(".nav-link").click(function() {
-        $(".nav-link").removeClass("active");
-        $(this).addClass("active");
-    });
-});
-</script>
+</head>
+
 <body>
     <!-- navigation bar -->
     <nav class="navbar navbar-expand-md">
@@ -142,100 +120,58 @@
                         </li>
                     </ul>
                 </div>
-                <div class="d-flex justify-content-center">
+                <div class="d-flex flex-row justify-content-center">
                     <ul class="navbar-nav">
-                    <li>
-                    <?php if (isset($_SESSION['logged_in']) && $_SESSION['logged_in'] == true) {  ?>
-                        <?php if(isset($_SESSION['image']) && $_SESSION['image'] != "default.jpg") { ?>
-                            <button type="button" class="btn btn-profile" onclick="openPopUp('popup')">
-                            <div class="rounded-img">
-                                <img src="img/<?php echo $_SESSION['image']; ?>">
-                            </div>
-                            </button>
-                        <?php } else { ?>
-                            <div class="d-flex justify-content-center">
-                            <button type="button" class="btn btn-green btn-circle" onclick="openPopUp('popup')">
-                                <?php echo "<div class=\"profile-text\">" . substr($_SESSION['username'], 0, 1) . "</div>"; ?>
-                            </button>
-                            </div>
-                        <?php } ?>
+                        <li class="nav-item">
+                            <?php if (isset($_SESSION['logged_in']) && $_SESSION['logged_in'] == true) { ?>
+                                <?php if(isset($_SESSION['image']) && $_SESSION['image'] != "default.jpg") { ?>
+                                    <button type="button" class="btn btn-circle" onclick="openPopUp('popup')">
+                                        <img class="rounded-img" src="img/<?php echo $_SESSION['image']; ?>">
+                                    </button>
+                                <?php } else { ?>
+                                    <button type="button" class="btn btn-circle" onclick="openPopUp('popup')">
+                                        <?php echo "<div class=\"profile-text\">" . substr($_SESSION['username'], 0, 1) . "</div>"; ?>
+                                    </button>
+                                <?php } ?>
+                                <a class="btn btn-blue" href="logout.php">Logout</a>
+                            <?php } else { ?>
+                                <button id="signup" type="button" class="btn btn-blue" data-bs-toggle="modal" data-bs-target="#signupModal">
+                                    Iscriviti
+                                </button>
+                                <button id="login" type="button" class="btn btn-green" data-bs-toggle="modal" data-bs-target="#loginModal">
+                                    Login
+                                </button>
+                            <?php } ?>
                         </li>
-                    <li>
-                        <form name="logoutForm" action="logout.php" method="POST">
-                            <button type="submit" class="btn btn-blue">
-                                <?php echo "Logout"; ?>
-                            </button>
-                        </form>
-                    </li>
-                    <?php } else { ?>
-                    <li>
-                        <button id="signup" type="button" class="btn btn-blue" data-bs-toggle="modal" data-bs-target="#signupModal">
-                        Iscriviti
-                        </button>
-                        <button id="login" type="button" class="btn btn-green" data-bs-toggle="modal" data-bs-target="#loginModal">
-                        Login
-                        </button>
-                        </li>
-                        <?php }  ?>
                     </ul>
                 </div>
             </div>
         </div>
     </nav>
 
-    <!-- Pop Up Profile -->
+    <!-- profile popup -->
     <div id="popup" class="popup">
         <div class="popup-content">
             <span class="closebtn" onclick="closePopUp('popup')">&times;</span>
             <div class="d-flex justify-content-center">
                 <?php if(isset($_SESSION['image']) && $_SESSION['image'] != "default.jpg") { ?>
-                    <div class="rounded-img">
-                        <img src="img/<?php echo $_SESSION['image']; ?>">
-                    </div>
+                    <img class="rounded-img" src="img/<?php echo $_SESSION['image']; ?>">
                 <?php } else { ?>
                     <div class="profile-image">
                         <?php echo substr($_SESSION['username'], 0, 1); ?>
                     </div>
                 <?php } ?>
             </div>
-            <div class="text-center mt-2">
+            <div class="text-center m-2">
                 <?php echo $_SESSION['username']; ?>
             </div>
-            <button type="button" class="btn btn-green" onclick="openPopUp('profilePopUp')">Cambia Immagine Profilo</button>
-            <button id = "editMailBtn" type="button" class="btn btn-green" data-bs-toggle="modal" data-bs-target="#editEmail">Cambia Email</button>
-            <button id = "editUsernameBtn" type="button" class="btn btn-green" data-bs-toggle="modal" data-bs-target="#editUsername">Cambia Username</button>
-            <button id = "editPasswordBtn" type="button" class="btn btn-green" data-bs-toggle="modal" data-bs-target="#editPassword">Cambia Password</button>
-        </div>
-    </div>
-
-    <!-- Profile Image PopUp -->
-    <div id="profilePopUp" class="profilepopup">
-        <div class="popup-content">
-            <span class="closebtn" onclick="closePopUp('profilePopUp')">&times;</span>
-            <div class="d-flex justify-content-center">
-                <?php if(isset($_SESSION['image']) && $_SESSION['image'] != "default.jpg") { ?>
-                    <div class="rounded-img">
-                        <img src="img/<?php echo $_SESSION['image']; ?>">
-                    </div>
-                </form>
-                <?php } else { ?>
-                    <div class="profile-image mb-2">
-                        <?php echo substr($_SESSION['username'], 0, 1); ?>
-                    </div>
-                <?php } ?>
+            <div class="d-grid">
+                <button id="editImageBtn" type="button" class="btn btn-green" data-bs-toggle="modal" data-bs-target="#editImage">Cambia Immagine Profilo</button>
+                <button id = "editMailBtn" type="button" class="btn btn-green" data-bs-toggle="modal" data-bs-target="#editEmail">Cambia Email</button>
+                <button id = "editUsernameBtn" type="button" class="btn btn-green" data-bs-toggle="modal" data-bs-target="#editUsername">Cambia Username</button>
+                <button id = "editPasswordBtn" type="button" class="btn btn-green" data-bs-toggle="modal" data-bs-target="#editPassword">Cambia Password</button>
             </div>
-                <form id="formImage" action="updatePhoto.php" method="post" enctype="multipart/form-data">
-                    <input type="file" name="fileToUpload" id="fileToUpload" accept=".jpg, .jpeg, .png">
-                </form>
-                <script type="text/javascript">
-                    document.getElementById("fileToUpload").onchange = function(){
-                        document.getElementById("formImage").submit();
-                    };
-                </script>
-                <?php if(isset($_SESSION['err_image']) && $_SESSION['err_image'] != ""){ ?>
-                    <div class="alert alert-danger" role="alert"><?php echo $_SESSION['err_image']; ?></div>
-                <?php $_SESSION['err_image'] = ""; ?>
-                <?php } ?>
+            
         </div>
     </div>
 
@@ -251,6 +187,39 @@
     </div>
    
     <!-- modal windows -->
+    <div class="modal fade" id="editImage">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Cambia immagine</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="d-flex justify-content-center">
+                        <?php if(isset($_SESSION['image']) && $_SESSION['image'] != "default.jpg") { ?>
+                            <img class="rounded-img" src="img/<?php echo $_SESSION['image']; ?>">
+                        <?php } else { ?>
+                            <div class="profile-image mb-2">
+                                <?php echo substr($_SESSION['username'], 0, 1); ?>
+                            </div>
+                        <?php } ?>
+                    </div>
+                    <form id="formImage" action="updatePhoto.php" method="post" enctype="multipart/form-data">
+                        <input type="file" name="fileToUpload" id="fileToUpload" accept=".jpg, .jpeg, .png">
+                    </form>
+                    <script type="text/javascript">
+                        document.getElementById("fileToUpload").onchange = function(){
+                            document.getElementById("formImage").submit();
+                        };
+                    </script>
+                    <?php if(isset($_SESSION['err_image']) && $_SESSION['err_image'] != ""){ ?>
+                        <div class="alert alert-danger" role="alert"><?php echo $_SESSION['err_image']; ?></div>
+                    <?php $_SESSION['err_image'] = ""; ?>
+                    <?php } ?>
+                </div>
+            </div>
+        </div>
+    </div>
     <div class="modal fade" id="editEmail">
         <div class="modal-dialog">
             <div class="modal-content">

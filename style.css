@@ -442,16 +442,18 @@ h5 {
     position: relative;
     width: 40px;
     height: 40px;
-    margin-bottom: 5px;
-    margin-right: 10px;
-    padding: 6px 0px;
+    margin: 0px;
+    padding: 0px;
     border-radius: 50%;
-    font-size: 20px;
+    font-size: large;
     font-weight: bold;
-    text-transform: uppercase; 
     background-color: rgba(40, 167, 69, 1);
-    display: flex;
     align-items: center;
+}
+
+.btn-circle:hover {
+    background-color: rgba(40, 167, 69, 0.5);
+    color: white;
 }
 
 .profile-image {
@@ -487,7 +489,7 @@ h5 {
     background-color: white;
     border: 1px solid #ccc;
     padding: 20px;
-    z-index: 9999;
+    z-index: auto;
     border-radius: 10px;
     width: 300px;
     height: 400px;
@@ -502,7 +504,7 @@ h5 {
     background-color: white;
     border: 1px solid #ccc;
     padding: 20px;
-    z-index: 9999;
+    z-index: auto;
     border-radius: 10px;
     width: 300px;
     height: auto;
@@ -526,20 +528,20 @@ h5 {
     overflow: hidden;
     border-radius: 50%;
 }
-.rounded-img img {
+.rounded-img > img {
     width: 100%;
     height: auto;
 }
 
-.profilepopup .rounded-img {
-    width: 100px;
-    height: 100px; 
+.modal .rounded-img {
+    width: 50%;
+    height: 50%; 
     overflow: hidden;
     border-radius: 50%;
 }
 .popup .rounded-img {
-    width: 80px;
-    height: 80px; 
+    width: 30%;
+    height: 30%; 
     overflow: hidden;
     border-radius: 50%;
 }
