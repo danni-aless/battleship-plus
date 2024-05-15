@@ -66,6 +66,10 @@
     <div id="area-gioco">
         <div id="area-laterale">
             <div id="area-navi" class="container"></div>
+            <div id="area-timer">
+                <i class="fa-solid fa-clock"></i>
+                <div id="timer">00:00</div>
+            </div>
             <div id="area-chat">
                 <div id="storico-messaggi" class="d-flex flex-column-reverse"></div>
                 <form id="form-chat" action="" autocomplete="off">

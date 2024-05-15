@@ -8,11 +8,6 @@ Prima di configurare il progetto assicurarsi di aver installato XAMPP e NodeJS
 4. Accedere al sito: http://localhost/battleship-plus/index.php
 
 ### TODO:
-- Server php
-    - Gestione profilo
-        - Reset password
-        - Cambio password
-        - Caricare immagine profilo
-- Area di gioco
-    - Timer
+- Storico partite
+- Personalizzazione colore navi
 - Regole

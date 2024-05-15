@@ -54,6 +54,10 @@
                 openPopUp('popup');
                 $("#editPasswordBtn").click();
             <?php } ?>
+            <?php if (isset($_SESSION['edit_err_msg']) && $_SESSION['edit_err_msg'] == "Password Errata!") { ?>
+                openPopUp('popup');
+                $("#deleteUserBtn").click();
+            <?php } ?>
             <?php if (isset($_SESSION['login_err_msg']) && $_SESSION['login_err_msg'] != "") { ?>
                 $("#login").click();
             <?php } ?>
@@ -170,8 +174,8 @@
                 <button id = "editMailBtn" type="button" class="btn btn-green" data-bs-toggle="modal" data-bs-target="#editEmail">Cambia Email</button>
                 <button id = "editUsernameBtn" type="button" class="btn btn-green" data-bs-toggle="modal" data-bs-target="#editUsername">Cambia Username</button>
                 <button id = "editPasswordBtn" type="button" class="btn btn-green" data-bs-toggle="modal" data-bs-target="#editPassword">Cambia Password</button>
+                <button id = "deleteUserBtn" type="button" class="btn btn-red" data-bs-toggle="modal" data-bs-target="#deleteUser">Elimina Profilo</button>
             </div>
-            
         </div>
     </div>
 
@@ -288,8 +292,11 @@
                 <div class="modal-body">
                     <form name="editForm" action="edituser.php" method="POST">
                         <div class="mb-3">
-                            <input type="text" name="inputPassword" class="form-control" placeholder="Nuova Password"
+                            <input type="password" id="newpass" name="inputPassword" class="form-control" placeholder="Nuova Password"
                                 required>
+                        </div>
+                        <div class="mb-3">
+                            <input type="checkbox" name="showPassword" onclick="showPass('newpass')">Show Password
                         </div>
                         <div class="row">
                             <div class="col-md-3">
@@ -297,6 +304,38 @@
                             </div>
                             <div class="col-md-9">
                                 <?php if(isset($_SESSION['edit_err_msg']) && $_SESSION['edit_err_msg'] == "La nuova password deve essere diversa dalla password attuale!"){ ?>
+                                    <div class="alert alert-danger" role="alert"><?php echo $_SESSION['edit_err_msg']; ?></div>
+                                <?php $_SESSION['edit_err_msg'] = ""; ?>
+                                <?php } ?>
+                            </div>
+                        </div> 
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="deleteUser">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Elimina il profilo</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form name="editForm" action="edituser.php" method="POST">
+                        <div class="mb-3">
+                            <input type="password" id="deletepass" name="inputPassword" class="form-control" placeholder="Conferma password"
+                                required>
+                        </div>
+                        <div class="mb-3">
+                            <input type="checkbox" name="showPassword" onclick="showPass('deletepass')">Show Password
+                        </div>
+                        <div class="row">
+                            <div class="col-md-3">
+                                <button type="submit" class="btn btn-red" name="deleteUser">Elimina</button>
+                            </div>
+                            <div class="col-md-9">
+                                <?php if(isset($_SESSION['edit_err_msg']) && $_SESSION['edit_err_msg'] == "Password Errata!"){ ?>
                                     <div class="alert alert-danger" role="alert"><?php echo $_SESSION['edit_err_msg']; ?></div>
                                 <?php $_SESSION['edit_err_msg'] = ""; ?>
                                 <?php } ?>
@@ -325,11 +364,11 @@
                                 required>
                         </div>
                         <div class="mb-3">
-                            <input type="password" id = "mypass1" name="inputPassword" class="form-control" placeholder="Password"
+                            <input type="password" id = "signuppass" name="inputPassword" class="form-control" placeholder="Password"
                                 required>
                         </div>
                         <div class="mb-3">
-                            <input type="checkbox" onclick="showPass('mypass1')">Show Password
+                            <input type="checkbox" name="showPassword" onclick="showPass('signuppass')">Show Password
                         </div>
                         <div class="row">
                             <div class="col-md-3">
@@ -362,11 +401,11 @@
                             required>
                             </div>
                             <div class="mb-3">
-                            <input type="password" id="mypass2" name="inputPassword" class="form-control" placeholder="Password"
+                            <input type="password" id="loginpass" name="inputPassword" class="form-control" placeholder="Password"
                             required>
                             </div>
                             <div class="mb-3">
-                                <input type="checkbox" onclick="showPass('mypass2')">Show Password
+                                <input type="checkbox" name="showPassword" onclick="showPass('loginpass')">Show Password
                             </div>
                             <div class="row">
                                 <div class="col-md-3">

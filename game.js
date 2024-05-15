@@ -178,10 +178,42 @@ function stampaMessaggio(msg) {
     }
 }
 
+let timer = null;
+function resetTimer() {
+    if(timer)
+        clearInterval(timer);
+}
+
+function impostaTimer() {
+    resetTimer();
+    if(giocoFinito) return;
+    let time = 30;
+    let minutes = String(Math.floor(time/60)).padStart(2, '0');
+    let seconds = String(time%60).padStart(2, '0');
+    $('#timer').html(`${minutes}:${seconds}`);
+    if(turno==="g") {
+        $('#area-timer').css({'background-color': 'white'});
+        timer = setInterval(function() {
+            if(time===0) {
+                socket.emit("cambia-turno");
+            }
+            time--;
+            minutes = String(Math.floor(time/60)).padStart(2, '0');
+            seconds = String(time%60).padStart(2, '0');
+            $('#timer').html(`${minutes}:${seconds}`);
+            if(time<=5)
+                $('#area-timer').css({'background-color': 'rgba(209, 20, 20, 1)'});
+        }, 1000);
+    } else {
+        $('#area-timer').css({'background-color': 'gray'});
+    }
+}
+
 function cambiaTurno() {
     turno = turno==="g" ? "a" : "g";
     const message = turno==="g" ? "<b>È il tuo turno!</b>" : "<b>È il turno dell'avversario</b>";
     stampaMessaggio(message);
+    impostaTimer();
 }
 
 function iniziaPartita(firstPlayer) {
@@ -190,10 +222,12 @@ function iniziaPartita(firstPlayer) {
     stampaMessaggio("<b>Partita iniziata!</b>")
     const message = turno==="g" ? "<b>È il tuo turno!</b>" : "<b>È il turno dell'avversario</b>";
     stampaMessaggio(message);
+    impostaTimer();
 }
 
 function terminaPartita() {
     giocoFinito = true;
+    resetTimer();
     socket.emit("end");
     // Aggiornamento della classifica
     $.ajax({
@@ -482,6 +516,7 @@ socket.on("cambia-turno", () => {
 });
 socket.on("end", () => {
     giocoFinito = true;
+    resetTimer();
     // Aggiornamento della classifica
     $.ajax({
         url: "updateRanking.php",
@@ -511,6 +546,7 @@ const bottoneInizio = document.getElementById("bottone-inizio");
 bottoneInizio.addEventListener("click", function(event) {
     bottoneInizio.parentNode.removeChild(bottoneInizio);
     document.getElementById("area-navi").style.display="none";
+    document.getElementById("area-timer").style.display="flex";
     document.getElementById("area-chat").style.display="block";
     $(".cella").attr("draggable", "false");
     $(".cella-piena").css({cursor: 'default'});

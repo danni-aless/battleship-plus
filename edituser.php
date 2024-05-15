@@ -40,6 +40,19 @@ if (isset($_POST['editEmail'])) {
     } else {
         $_SESSION['edit_err_msg'] =  "La nuova password deve essere diversa dalla password attuale!";
     }
+} elseif (isset($_POST['deleteUser'])) {
+    $inputPassword = $_POST['inputPassword'];
+    $query = "select password from login where email = '$email'";
+    $result = mysqli_query($db_conn, $query);
+    $row = mysqli_fetch_assoc($result);
+    $currentPassword = $row['password'];
+    if ($inputPassword === $currentPassword) {
+        $query_delete = "delete from login where email = '$email'";
+        $result = mysqli_query($db_conn, $query_delete);
+        session_destroy();
+    } else {
+        $_SESSION['edit_err_msg'] =  "Password Errata!";
+    }
 } 
 header("location:index.php");
 ?>
