@@ -129,11 +129,11 @@
                         <li class="nav-item">
                             <?php if (isset($_SESSION['logged_in']) && $_SESSION['logged_in'] == true) { ?>
                                 <?php if(isset($_SESSION['image']) && $_SESSION['image'] != "default.jpg") { ?>
-                                    <button type="button" class="btn btn-circle" onclick="openPopUp('popup')">
+                                    <button type="button" class="btn btn-circle " onclick="openPopUp('popup')">
                                         <img class="rounded-img" src="img/<?php echo $_SESSION['image']; ?>">
                                     </button>
                                 <?php } else { ?>
-                                    <button type="button" class="btn btn-circle" onclick="openPopUp('popup')">
+                                    <button type="button" class="btn btn-circle btn-green" onclick="openPopUp('popup')">
                                         <?php echo "<div class=\"profile-text\">" . substr($_SESSION['username'], 0, 1) . "</div>"; ?>
                                     </button>
                                 <?php } ?>
