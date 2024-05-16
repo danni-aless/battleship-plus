@@ -42,13 +42,19 @@ if (isset($_POST['editEmail'])) {
     }
 } elseif (isset($_POST['deleteUser'])) {
     $inputPassword = $_POST['inputPassword'];
-    $query = "select password from login where email = '$email'";
+    $query = "select * from login where email = '$email'";
     $result = mysqli_query($db_conn, $query);
     $row = mysqli_fetch_assoc($result);
     $currentPassword = $row['password'];
+    $imageToDelete = $row['image'];
+
     if ($inputPassword === $currentPassword) {
         $query_delete = "delete from login where email = '$email'";
         $result = mysqli_query($db_conn, $query_delete);
+
+        $imagePath = "img/" . $imageToDelete;
+        unlink($imagePath);
+        
         session_destroy();
     } else {
         $_SESSION['edit_err_msg'] =  "Password Errata!";

@@ -3,9 +3,12 @@ session_start();
 include "connection.php";
 if(isset($_FILES['fileToUpload'])){
     $target_dir = "img/"; 
-    $target_file = $target_dir . basename($_FILES["fileToUpload"]["name"]);
+
     $_SESSION['err_image'] = "";
-    $imageFileType = strtolower(pathinfo($target_file, PATHINFO_EXTENSION));
+    $imageFileType = strtolower(pathinfo($_FILES["fileToUpload"]["name"], PATHINFO_EXTENSION));
+
+    $new_image_name = uniqid() . '.' . $imageFileType; 
+    $target_file = $target_dir . $new_image_name;
 
     if ($_FILES["fileToUpload"]["size"] > 500000) {
         $_SESSION['err_image'] = "Immagine troppo grande.";
@@ -19,8 +22,8 @@ if(isset($_FILES['fileToUpload'])){
         if (move_uploaded_file($_FILES["fileToUpload"]["tmp_name"], $target_file)) {
             
             $username = $_SESSION['username'];
-            $new_image_name = mysqli_real_escape_string($db_conn, basename($_FILES["fileToUpload"]["name"]));
-
+            $new_image_name = mysqli_real_escape_string($db_conn, $new_image_name);
+            
             $update_query = "update login set image = '$new_image_name' where username = '$username'";
             $result = mysqli_query($db_conn, $update_query);
             
