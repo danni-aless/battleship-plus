@@ -23,7 +23,16 @@ if(isset($_FILES['fileToUpload'])){
             
             $username = $_SESSION['username'];
             $new_image_name = mysqli_real_escape_string($db_conn, $new_image_name);
-            
+
+            $query = "select * from login where username = '$username'";
+            $result = mysqli_query($db_conn, $query);
+            $row = mysqli_fetch_assoc($result);
+            $imageToDelete = $row['image'];
+            if($imageToDelete != "default.jpg") {
+                $imagePath = "img/" . $imageToDelete;
+                unlink($imagePath);
+            }
+
             $update_query = "update login set image = '$new_image_name' where username = '$username'";
             $result = mysqli_query($db_conn, $update_query);
             
