@@ -465,15 +465,35 @@ h5 {
     height: 40px;
     margin: 0px;
     padding: 0px;
+    border-width: 0px;
     border-radius: 50%;
     font-size: large;
     font-weight: bold;
     align-items: center;
 }
 
-.btn-circle:hover {
-    background-color: rgba(40, 167, 69, 0.5);
+.btn-circle.btn-green {
+    padding-left: 0px;
+    padding-right: 0px;
     color: white;
+    background-color: rgba(40, 167, 69, 1);
+}
+
+.btn-circle.btn-green:hover {
+    padding-left: 0px;
+    padding-right: 0px;
+    color: white;
+    background-color: rgba(40, 167, 69, 0.5);
+}
+
+#navbarNav img {
+    opacity: 1;
+    transition: 0.3s;
+}
+
+#navbarNav img:hover {
+    opacity: 0.5;
+    transition: 0.3s;
 }
 
 .profile-image {
