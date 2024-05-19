@@ -2,9 +2,9 @@
 $(document).ready(function() {
 
 // Connessione al server di gioco
-const socket = io("http://localhost:8000");
-//volendo si può testare il progetto sulla rete di casa, va inserito l'indirizzo ip locale del computer
-//const socket = io("http://192.168.1.201:8000");
+const GAME_SERVER = "http://localhost:8000";
+//const GAME_SERVER = "";
+const socket = io.connect(GAME_SERVER);
 
 // Recupero dei dati di gioco
 $.ajax({
@@ -233,7 +233,10 @@ function terminaPartita() {
     $.ajax({
         url: "updateRanking.php",
         type: "POST",
-        data: {type: "lost"}
+        data: {
+            opponent: avversario,
+            result: "lost"
+        }
     });
     $('#lost-modal').modal('show');
 }
@@ -365,6 +368,7 @@ function aggiungiEventListenerCelle() {
         cella.addEventListener("drop", function(event) {
             const nome = event.dataTransfer.getData("text/plain");
             const elemento = elementi.find(elem => elem.nome===nome);
+            elementoSpostato = null;
             if(!giocatorePronto && !giocoIniziato && elemento!=null) {
                 const idCella = event.target.id;
                 if(posizioneValida(elemento, idCella)) {
@@ -405,6 +409,7 @@ function aggiungiEventListenerCelle() {
         cella.addEventListener("drop", function(event) {
             const nome = event.dataTransfer.getData("text/plain");
             const powerUp = powerUps.find(elem => elem.nome===nome);
+            elementoSpostato = null;
             if(giocoIniziato && powerUp!=null && powerUp.div.classList.contains("powerup") && cellaAttiva(event.target)) {
                 usaPowerUp(powerUp, event.target.id);
                 powerUp.div.parentNode.remove();
@@ -432,6 +437,7 @@ function aggiungiEventListenerAreaNavi() {
     areaNavi.addEventListener("drop", function(event) {
         const nome = event.dataTransfer.getData("text/plain");
         const elemento = elementi.find(elem => elem.nome===nome);
+        elementoSpostato = null;
         if(!giocatorePronto && !giocoIniziato && elemento!=null) {
             togliElemento(elemento);
             if(elemento.div.parentNode===null) {
@@ -521,7 +527,10 @@ socket.on("end", () => {
     $.ajax({
         url: "updateRanking.php",
         type: "POST",
-        data: {type: "win"},
+        data: {
+            opponent: avversario,
+            result: "win"
+        }
     });
     $('#win-modal').modal('show');
 });
@@ -537,7 +546,7 @@ formChat.addEventListener("submit", function(event) {
     }
 });
 socket.on("chat", (msg) => {
-    const message = msg.replace(player, "Tu"); // vedere se conviene scrivere "tu" o il nome del player
+    const message = msg.replace(player, "Tu");
     stampaMessaggio(message);
 });
 
@@ -551,7 +560,7 @@ bottoneInizio.addEventListener("click", function(event) {
     $(".cella").attr("draggable", "false");
     $(".cella-piena").css({cursor: 'default'});
     giocatorePronto = true;
-    socket.emit("pronto", elementi);
+    socket.emit("pronto");
 });
 
 // Mostra un alert se durante la partita si cerca di ricaricare o cambiare pagina

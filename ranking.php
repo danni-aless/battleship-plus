@@ -4,7 +4,7 @@
     $result = mysqli_query($db_conn, $query);
 ?>
 
-<link rel="stylesheet" href="ranking.css">
+<link rel="stylesheet" href="table.css">
 
 <h1>Classifica</h1>
 <div class="table-container">

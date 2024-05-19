@@ -64,6 +64,16 @@
             <?php if (isset($_SESSION['signup_err_msg']) && $_SESSION['signup_err_msg'] != "") { ?>
                 $("#signup").click();
             <?php } ?>
+            $('#regole').click(function(e) {
+                e.preventDefault(); 
+                $.ajax({
+                    type: 'GET',
+                    url: 'rules.php',
+                    success: function(data) {
+                        $('#webpage-body').html(data);
+                    },
+                });
+            });
             $('#classifica').click(function(e) {
                 e.preventDefault(); 
                 $.ajax({
@@ -74,14 +84,14 @@
                     }
                 });
             });
-            $('#regole').click(function(e) {
+            $('#partite-giocate').click(function(e) {
                 e.preventDefault(); 
                 $.ajax({
                     type: 'GET',
-                    url: 'rules.php',
+                    url: 'history.php',
                     success: function(data) {
                         $('#webpage-body').html(data);
-                    },
+                    }
                 });
             });
             $(".nav-link").click(function() {
@@ -122,6 +132,11 @@
                         <li class="nav-item">
                             <a id="classifica" class="nav-link" href="#">Classifica</a>
                         </li>
+                        <?php if (isset($_SESSION['logged_in']) && $_SESSION['logged_in'] == true) { ?>
+                            <li class="nav-item">
+                                <a id="partite-giocate" class="nav-link" href="history.php">Partite giocate</a>
+                            </li>
+                        <?php } ?>
                     </ul>
                 </div>
                 <div class="d-flex flex-row justify-content-center">

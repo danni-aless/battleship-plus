@@ -51,7 +51,8 @@ function aggiungiGiocatore(player, socket, stanza) {
 }
 
 io.on("connection", (socket) => {
-    let stanza, player;
+    let stanza = null;
+    let player = null;
     socket.on("nuovo-giocatore", (gameData) => {
         if(gameData.username==="") gameData.username = "user-" + Math.random().toString(36).slice(2, 7);
         player = gameData.username;
@@ -71,7 +72,7 @@ io.on("connection", (socket) => {
             io.to(stanza.nome).emit("avversario-trovato", stanza.settings, stanza.giocatori);
         }
     });
-    socket.on("pronto", (msg) => {
+    socket.on("pronto", () => {
         stanza.giocatoriPronti++;
         if(stanza.giocatoriPronti===stanza.posti) {
             io.to(stanza.nome).emit("play", stanza.giocatori[0]);
@@ -96,7 +97,7 @@ io.on("connection", (socket) => {
         socket.broadcast.emit("chat", "<b>Nave nemica affondata!</b>");
     });
     socket.on("disconnect", () => {
-        /*socket.leave(stanza.nome);*/
+        if(stanza===null) return;
         stanza.postiDisponibili++;
         stanza.giocatori.splice(stanza.giocatori.indexOf(player), 1);
         stanza.giocatoriPronti--;
