@@ -213,6 +213,17 @@
             <a class="btn btn-green" href="saveGameData.php?mode=join">Unisciti alla Partita</a>
         </div>
     </div>
+
+    <!-- footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="row">
+                <div class="col">
+                    <p>&copy; <?php echo date("Y"); ?> Battleship+ Made with ❤️ by Alessandro and Raniero</p>
+                </div>
+            </div>
+        </div>
+    </footer>
    
     <!-- modal windows -->
     <div class="modal fade" id="editImage">

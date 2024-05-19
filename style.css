@@ -104,8 +104,10 @@ html {
 }
 
 body {
-    height: 100%;
+    min-height: 100vh;
     margin: 0px;
+    display: flex;
+    flex-direction: column;
     background: rgb(0,74,173);
     background: linear-gradient(180deg, rgba(0,74,173,1) 0%, rgba(56,182,255,1) 70%);
     background-repeat: no-repeat;
@@ -120,8 +122,13 @@ h1 {
 }
 
 h5 {
+    margin: 0px;
     text-align: center;
     color: black;
+}
+
+#webpage-body {
+    margin-bottom: 20px;
 }
 
 #area-gioco {
@@ -355,7 +362,7 @@ h5 {
     aspect-ratio: 1/1;
     width: 70%;
     height: auto;
-    background-color: white;
+    background-color: lightskyblue;
     box-shadow: rgba(0, 0, 0, 0.15) 1.95px 1.95px 2.6px;
     display: flex;
     flex-wrap: wrap;
@@ -597,5 +604,18 @@ h5 {
 
 .profileicon{
 
+    text-align: center;
+}
+
+.footer {
+    margin-top: auto;
+    width: 100%;
+    background-color: rgb(0, 74, 173);
+    color: white;
+}
+
+.footer p {
+    margin: 0px;
+    padding: 10px;
     text-align: center;
 }
