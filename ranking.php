@@ -1,5 +1,5 @@
 <?php
-    include 'connection.php';
+    include "connection.php";
     $query = "select username, partite_giocate, partite_vinte, data_iscrizione from login order by partite_vinte desc";
     $result = mysqli_query($db_conn, $query);
 ?>

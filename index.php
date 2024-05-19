@@ -124,7 +124,7 @@
                 <div class="d-flex me-auto">
                     <ul class="navbar-nav">
                         <li class="nav-item">
-                            <a class="nav-link active" aria-current="page" href="index.php">Home</a>
+                            <a id="home" class="nav-link active" href="index.php">Home</a>
                         </li>
                         <li class="nav-item">
                             <a id="regole" class="nav-link" href="#">Regole</a>
@@ -182,7 +182,16 @@
                 <?php } ?>
             </div>
             <div class="text-center m-2">
-                <?php echo $_SESSION['username']; ?>
+                <?php
+                    include "getRanking.php";
+                    $pos = getRanking($_SESSION['username']);
+                    echo "<span class='badge text-bg-primary'>";
+                    echo $_SESSION['username'];
+                    if($pos <= 3)
+                        echo " <i class='fa-solid fa-trophy'></i>";
+                    echo "</span>";
+                    echo " <span class='badge text-bg-warning'> {$pos}° </span>";
+                ?>
             </div>
             <div class="d-grid">
                 <button id="editImageBtn" type="button" class="btn btn-green" data-bs-toggle="modal" data-bs-target="#editImage">Cambia Immagine Profilo</button>

@@ -8,6 +8,4 @@ Prima di configurare il progetto assicurarsi di aver installato XAMPP e NodeJS
 4. Accedere al sito: http://localhost/battleship-plus/index.php
 
 ### TODO:
-- Storico partite
-- Personalizzazione colore navi
 - Regole

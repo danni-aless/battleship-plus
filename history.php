@@ -1,6 +1,6 @@
 <?php
     session_start();
-    include 'connection.php';
+    include "connection.php";
     $username = $_SESSION['username'];
     $query = "select * from partite where giocatore='$username'";
     $result = mysqli_query($db_conn, $query);
