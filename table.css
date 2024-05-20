@@ -10,6 +10,15 @@ table {
     box-shadow: rgba(0, 0, 0, 0.15) 1.95px 1.95px 2.6px;
 }
 
+.modal table {
+    width: 100%;
+    border-radius: 0.5rem;
+}
+
+.modal-body {
+    padding: 0px;
+}
+
 table tr:first-child th:first-child {
     border-top-left-radius: 20px;
 }
@@ -24,6 +33,22 @@ table tr:last-child td:first-child {
 
 table tr:last-child td:last-child {
     border-bottom-right-radius: 20px;
+}
+
+.modal table tr:first-child th:first-child {
+    border-top-left-radius: 0px;
+}
+
+.modal table tr:first-child th:last-child {
+    border-top-right-radius: 0px;
+}
+
+.modal table tr:last-child td:first-child {
+    border-bottom-left-radius: 0.5rem;
+}
+
+.modal table tr:last-child td:last-child {
+    border-bottom-right-radius: 0.5rem;
 }
 
 th, td {

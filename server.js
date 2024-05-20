@@ -106,6 +106,7 @@ io.on("connection", (socket) => {
         if(stanza.giocatori.length===0) {
             stanze.splice(stanze.indexOf(stanza), 1);
         }
+        socket.broadcast.emit("disconnesso");
     });
 });
 

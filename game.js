@@ -211,7 +211,7 @@ function impostaTimer() {
 
 function cambiaTurno() {
     turno = turno==="g" ? "a" : "g";
-    const message = turno==="g" ? "<b>È il tuo turno!</b>" : "<b>È il turno dell'avversario</b>";
+    const message = turno==="g" ? "<b>È il tuo turno!</b>" : `<b>È il turno di ${avversario}</b>`;
     stampaMessaggio(message);
     impostaTimer();
 }
@@ -220,7 +220,7 @@ function iniziaPartita(firstPlayer) {
     turno = firstPlayer===player ? "g" : "a";
     giocoIniziato = true;
     stampaMessaggio("<b>Partita iniziata!</b>")
-    const message = turno==="g" ? "<b>È il tuo turno!</b>" : "<b>È il turno dell'avversario</b>";
+    const message = turno==="g" ? "<b>È il tuo turno!</b>" : `<b>È il turno di ${avversario}</b>`;
     stampaMessaggio(message);
     impostaTimer();
 }
@@ -533,6 +533,11 @@ socket.on("end", () => {
         }
     });
     $('#win-modal').modal('show');
+});
+socket.on("disconnesso", () => {
+    giocoFinito = true;
+    resetTimer();
+    $('#disconnect-modal').modal('show');
 });
 
 // Gestione della chat utenti

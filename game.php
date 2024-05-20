@@ -29,6 +29,46 @@
     <!-- project's resources -->
     <link rel="icon" href="assets/cruise.png">
     <link rel="stylesheet" href="style.css">
+    <script>
+        $(document).ready(function() {
+            $('#regole').click(function(e) {
+                e.preventDefault(); 
+                $.ajax({
+                    type: 'GET',
+                    url: 'rules.php',
+                    success: function(data) {
+                        $('#ajax-modal .modal-title').html($($.parseHTML(data)).filter('h1').text());
+                        $('#ajax-modal .modal-body').html($($.parseHTML(data)).filter(':not(h1)'));
+                        $('#ajax-modal').modal('show');
+                    },
+                });
+            });
+            $('#classifica').click(function(e) {
+                e.preventDefault(); 
+                $.ajax({
+                    type: 'GET',
+                    url: 'ranking.php',
+                    success: function(data) {
+                        $('#ajax-modal .modal-title').html($($.parseHTML(data)).filter('h1').text());
+                        $('#ajax-modal .modal-body').html($($.parseHTML(data)).filter(':not(h1)'));
+                        $('#ajax-modal').modal('show');
+                    }
+                });
+            });
+            $('#partite-giocate').click(function(e) {
+                e.preventDefault(); 
+                $.ajax({
+                    type: 'GET',
+                    url: 'history.php',
+                    success: function(data) {
+                        $('#ajax-modal .modal-title').html($($.parseHTML(data)).filter('h1').text());
+                        $('#ajax-modal .modal-body').html($($.parseHTML(data)).filter(':not(h1)'));
+                        $('#ajax-modal').modal('show');
+                    }
+                });
+            });
+        });
+    </script>
     <script src="game.js"></script>
     
 </head>
@@ -48,14 +88,19 @@
                 <div class="d-flex me-auto">
                     <ul class="navbar-nav">
                         <li class="nav-item">
-                            <a class="nav-link" href="index.php">Home</a>
+                            <a id="home" class="nav-link" href="index.php">Home</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="rules.php">Regole</a>
+                            <a id="regole" class="nav-link" href="#">Regole</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="ranking.php">Classifica</a>
+                            <a id="classifica" class="nav-link" href="#">Classifica</a>
                         </li>
+                        <?php if (isset($_SESSION['logged_in']) && $_SESSION['logged_in'] == true) { ?>
+                            <li class="nav-item">
+                                <a id="partite-giocate" class="nav-link" href="history.php">Partite giocate</a>
+                            </li>
+                        <?php } ?>
                     </ul>
                 </div>
             </div>
@@ -103,22 +148,38 @@
         </div>
     </div>
 
+    <!-- footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="row">
+                <div class="col">
+                    <p>&copy; <?php echo date("Y"); ?> Battleship+ Made with ❤️ by Alessandro and Raniero</p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
     <!-- modal windows -->
     <div class="modal fade" id="wait-modal" data-bs-backdrop="static" data-bs-keyboard="false">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-body">
-                    <h5 class="modal-title">In cerca di una partita...</h5>
+                    <div class="d-flex align-items-center">
+                        <h5>In cerca di una partita...</h5>
+                        <div class="spinner-border ms-auto"></div>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
     <div class="modal fade" id="win-modal" data-bs-backdrop="static" data-bs-keyboard="false">
-        <div class="modal-dialog">
+        <div class="modal-dialog modal-sm">
             <div class="modal-content">
                 <div class="modal-body">
-                    <h5>Hai vinto!</h5>
-                    <div class="d-flex justify-content-center gap-2">
+                    <div class="mb-3">
+                        <h5>Hai vinto!</h5>
+                    </div>
+                    <div class="d-flex justify-content-center">
                         <a class="btn btn-green" href="index.php">Torna alla Home</a>
                     </div>
                 </div>
@@ -126,14 +187,41 @@
         </div>
     </div>
     <div class="modal fade" id="lost-modal" data-bs-backdrop="static" data-bs-keyboard="false">
-        <div class="modal-dialog">
+        <div class="modal-dialog modal-sm">
             <div class="modal-content">
                 <div class="modal-body">
-                    <h5>Hai perso!</h5>
-                    <div class="d-flex justify-content-center gap-2">
+                    <div class="mb-3">
+                        <h5>Hai perso!</h5>
+                    </div>
+                    <div class="d-flex justify-content-center">
                         <a class="btn btn-green" href="index.php">Torna alla Home</a>
                     </div>
                 </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="disconnect-modal" data-bs-backdrop="static" data-bs-keyboard="false">
+        <div class="modal-dialog modal-sm">
+            <div class="modal-content">
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <h5>L'avversario si è disconnesso :(</h5>
+                    </div>
+                    <div class="d-flex justify-content-center">
+                        <a class="btn btn-green" href="index.php">Torna alla Home</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="ajax-modal">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title"></h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body"></div>
             </div>
         </div>
     </div>
