@@ -535,9 +535,11 @@ socket.on("end", () => {
     $('#win-modal').modal('show');
 });
 socket.on("disconnesso", () => {
-    giocoFinito = true;
-    resetTimer();
-    $('#disconnect-modal').modal('show');
+    if(!giocoFinito) {
+        giocoFinito = true;
+        resetTimer();
+        $('#disconnect-modal').modal('show');
+    }
 });
 
 // Gestione della chat utenti

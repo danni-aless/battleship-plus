@@ -532,6 +532,7 @@ h5 {
     left: 50%;
     transform: translate(-50%, -50%);
     color: white;
+    text-transform: uppercase;
 }
 .popup .btn {
     margin-bottom: 10px;
