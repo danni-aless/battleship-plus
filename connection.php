@@ -1,10 +1,10 @@
 <?php
-     /* stabilisce la connessione con il db : 
+    /*  stabilisce la connessione con il db: 
         username_default=root 
         password_default=root 
-        database = nome datbase su mySQL
-        porta default di xamp 3306
-        */
+        nome_database=database
+        porta_default=3306
+    */
     $db_conn = new mysqli("localhost", "root", "root", "database", 3306)
     or  die("Connection failed".$conn->connect_error);
 ?>

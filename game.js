@@ -32,7 +32,6 @@ function riempiGriglia(griglia, player) {
     $(".cella").css({width: `${100/width}%`});
 }
 
-
 // Creazione delle navi e dei powerup
 class Elemento {
     constructor(nome, classe, lunghezza) {
@@ -480,13 +479,11 @@ function inizializzaCampo(gameData) {
 
 // Gestione della connessione degli utenti
 socket.on("nuovo-giocatore", (playerName) => {
-    console.log(`giocatore: ${playerName}`);
     player = playerName;
     $('#wait-modal').modal('show');
 });
 socket.on("avversario-trovato", (gameData, players) => {
     avversario = players.filter(p => p!=player)[0];
-    console.log(`avversario trovato: ${avversario}`);
     inizializzaCampo(gameData);
     setTimeout(function() {
         $('#wait-modal').modal('hide');
@@ -548,13 +545,14 @@ const inputChat = document.getElementById("input-chat");
 formChat.addEventListener("submit", function(event) {
     event.preventDefault();
     if(inputChat.value) {
-        socket.emit("chat", `<b>${player}:</b> ${inputChat.value}`);
+        const message = `<b>${player}:</b> ${inputChat.value}`;
+        socket.emit("chat", message);
         inputChat.value = "";
+        stampaMessaggio(msg.replace(player, "Tu"));
     }
 });
 socket.on("chat", (msg) => {
-    const message = msg.replace(player, "Tu");
-    stampaMessaggio(message);
+    stampaMessaggio(msg);
 });
 
 // Associazione degli EventListener al bottone "Inizia la partita"

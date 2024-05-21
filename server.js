@@ -91,7 +91,8 @@ io.on("connection", (socket) => {
         socket.broadcast.emit("end");
     });
     socket.on("chat", (msg) => {
-        io.to(stanza.nome).emit("chat", msg);
+        console.log(`chat: ${msg}`);
+        socket.broadcast.emit("chat", msg);
     });
     socket.on("nave-affondata", () => {
         socket.broadcast.emit("chat", "<b>Nave nemica affondata!</b>");

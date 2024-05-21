@@ -96,7 +96,7 @@
                         <li class="nav-item">
                             <a id="classifica" class="nav-link" href="#">Classifica</a>
                         </li>
-                        <?php if (isset($_SESSION['logged_in']) && $_SESSION['logged_in'] == true) { ?>
+                        <?php if (isset($_SESSION['logged_in']) && $_SESSION['logged_in'] === true) { ?>
                             <li class="nav-item">
                                 <a id="partite-giocate" class="nav-link" href="history.php">Partite giocate</a>
                             </li>
