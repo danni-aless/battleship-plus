@@ -2,7 +2,11 @@
     session_start();
     include "connection.php";
     $username = $_SESSION['username'];
-    $query = "select * from partite where giocatore='$username'";
+    $query = "select * from login where username = '$username'";
+    $result = mysqli_query($db_conn, $query);
+    $row = mysqli_fetch_assoc($result);
+    $userid = $row['userid'];
+    $query = "select * from partite where giocatore = $userid";
     $result = mysqli_query($db_conn, $query);
 ?>
 
@@ -21,9 +25,16 @@
         <tbody>
             <?php
                 while ($row = mysqli_fetch_assoc($result)) {
+                    $avversario = $row['avversario'];
+                    if(is_numeric($avversario)) {
+                        $query2 = "select * from login where userid = $avversario";
+                        $result2 = mysqli_query($db_conn, $query2);
+                        $row2 = mysqli_fetch_assoc($result2);
+                        $avversario = $row2['username'];
+                    }
                     echo "<tr>";
                     echo "<td>" . $row['data'] . "</td>";
-                    echo "<td>" . $row['avversario'] . "</td>";
+                    echo "<td>" . $avversario . "</td>";
                     echo "<td>" . $row['risultato'] . "</td>";
                     echo "</tr>";
                 }
