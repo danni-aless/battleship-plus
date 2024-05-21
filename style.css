@@ -109,7 +109,7 @@ body {
     display: flex;
     flex-direction: column;
     background: rgb(0,74,173);
-    background: linear-gradient(180deg, rgba(0,74,173,1) 0%, rgba(56,182,255,1) 70%);
+    background: linear-gradient(0deg, rgba(0,74,173,1) 0%, rgba(56,182,255,1) 70%);
     background-repeat: no-repeat;
     background-attachment: fixed;
 }
@@ -129,6 +129,30 @@ h5 {
 
 #webpage-body {
     margin-bottom: 20px;
+}
+
+#area-immagine {
+    width: 40%;
+    height: auto;
+    overflow-x: clip;
+}
+
+#area-immagine.sx {
+    float: left;
+    display: flex;
+    justify-content: end;
+}
+
+#area-immagine.dx {
+    float: right;
+    display: flex;
+    justify-content: start;
+}
+
+#area-immagine > img {
+    width: 600px;
+    height: auto;
+    margin: -100px 0 0 0;
 }
 
 #area-gioco {

@@ -212,6 +212,12 @@
             </button>
             <a class="btn btn-green" href="saveGameData.php?mode=join">Unisciti alla Partita</a>
         </div>
+        <div id="area-immagine" class="sx">
+            <img src="assets/warship1.png" alt="warship1">
+        </div>
+        <div id="area-immagine" class="dx">
+            <img src="assets/warship2.png" alt="warship2">
+        </div>
     </div>
 
     <!-- footer -->
