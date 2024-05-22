@@ -548,7 +548,7 @@ formChat.addEventListener("submit", function(event) {
         const message = `<b>${player}:</b> ${inputChat.value}`;
         socket.emit("chat", message);
         inputChat.value = "";
-        stampaMessaggio(msg.replace(player, "Tu"));
+        stampaMessaggio(message.replace(player, "Tu"));
     }
 });
 socket.on("chat", (msg) => {
