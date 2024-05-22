@@ -6,6 +6,3 @@ Prima di configurare il progetto assicurarsi di aver installato XAMPP e NodeJS
 2. Aprire XAMPP e attivare i moduli Apache e MySQL
 3. Da terminale in "C:\xampp\htdocs\battleship-plus" eseguire i comandi "npm install" e "npm run dev"
 4. Accedere al sito: http://localhost/battleship-plus/index.php
-
-### TODO:
-- Regole

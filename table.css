@@ -6,7 +6,7 @@ table {
     width: 75%;
     margin: 0 auto;
     border-collapse: collapse;
-    border-radius: 20px;
+    border-radius: 0.5rem;
     box-shadow: rgba(0, 0, 0, 0.15) 1.95px 1.95px 2.6px;
 }
 
@@ -20,27 +20,27 @@ table {
 }
 
 table tr:first-child th:first-child {
-    border-top-left-radius: 20px;
+    border-top-left-radius: 0.5rem;
 }
 
 table tr:first-child th:last-child {
-    border-top-right-radius: 20px;
+    border-top-right-radius: 0.5rem;
 }
 
 table tr:last-child td:first-child {
-    border-bottom-left-radius: 20px;
+    border-bottom-left-radius: 0.5rem;
 }
 
 table tr:last-child td:last-child {
-    border-bottom-right-radius: 20px;
+    border-bottom-right-radius: 0.5rem;
 }
 
 #ajax-modal table tr:first-child th:first-child {
-    border-top-left-radius: 0px;
+    border-top-left-radius: 0rem;
 }
 
 #ajax-modal table tr:first-child th:last-child {
-    border-top-right-radius: 0px;
+    border-top-right-radius: 0rem;
 }
 
 #ajax-modal table tr:last-child td:first-child {

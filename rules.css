@@ -1,0 +1,24 @@
+#container-regole {
+    width: 75%;
+    padding: 1rem;
+    border-radius: 0.5rem;
+    background-color: white;
+    box-shadow: rgba(0, 0, 0, 0.15) 1.95px 1.95px 2.6px;
+}
+
+#powerup-help {
+    display: inline-flex;
+    align-items: center;
+}
+
+#powerup-help .powerup {
+    cursor: default;
+}
+
+#ajax-modal #container-regole {
+    width: 100%;
+}
+
+#ajax-modal .modal-body {
+    padding: 0px;
+}

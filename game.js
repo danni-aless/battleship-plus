@@ -288,7 +288,7 @@ function recuperaPowerUp(classePowerUp) {
     col.append(powerUp.div);
     row.append(col);
     
-    stampaMessaggio(`<b>Powerup ${classePowerUp[1].match(/powerup(\w+)/)[1]} trovato!</b>`);
+    stampaMessaggio(`<b>Power-up ${classePowerUp[1].match(/powerup(\w+)/)[1]} trovato!</b>`);
 }
 
 function usaPowerUp(powerUp, id) {
@@ -325,7 +325,7 @@ function usaPowerUp(powerUp, id) {
             }
         }
     }
-    stampaMessaggio(`<b>Powerup ${powerUp.classe[1].match(/powerup(\w+)/)[1]} usato</b>`);
+    stampaMessaggio(`<b>Power-up ${powerUp.classe[1].match(/powerup(\w+)/)[1]} usato</b>`);
 }
 
 // Funzione per controllo sul bottone di inizio partita
